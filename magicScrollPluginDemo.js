@@ -125,7 +125,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
           var popoutY = window.innerHeight - popoutHeight;
         }
       //Create text node with animation CSS and add it to the Head
-      var magicStyleTag = document.getElementById("magic-scroll-plugin-css");
+      var animatedNode = document.createElement("style");
+      animatedNode.setAttribute("id", "magic-scroll-plugin-animation-css");
+      head.appendChild(animatedNode);
+      var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
       //Popout Animation
       var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
       //Original Animation
@@ -209,5 +212,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     window.onresize = function() {
       //Probably should Add Animation Controllers here
       magicCheck(video);
+      var animationStyling = document.getElementById("magic-scroll-plugin-animation-css");
+      head.removeChild(animationStyling);
+      animationAddition();
     };
 });
