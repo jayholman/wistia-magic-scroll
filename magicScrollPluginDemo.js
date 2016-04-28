@@ -130,9 +130,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
         head.appendChild(animatedNode);
         var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
         //Popout Animation
-        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
+        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
         //Original Animation
-        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
+        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
 
         magicStyleTag.appendChild(popoutAnimationNode);
         magicStyleTag.appendChild(originalAnimationNode);
@@ -170,6 +170,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             return true;
         }
     };
+    console.log(screenCheck());
     //Determine if the size of the screen can accept magic-scroll
     var screenLargeEnough = function() {
         var windowWidth = window.innerWidth;
