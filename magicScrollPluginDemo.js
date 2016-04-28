@@ -56,12 +56,12 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutWidthPixels = pixelConverter(popoutWidth);
     //Create functions to set the size for the original and popout
     var originalSize = function() {
-        var originalSizeCss = '.originalSize { height: ' + originalHeight + '; width: ' + originalWidth + '; position: relative;} ';
+        var originalSizeCss = '.originalSize { height: ' + originalHeight + '; width: ' + originalWidth + '; position: relative; z-index: 1000;} ';
         return originalSizeCss;
     };
     var popoutSize = function() {
         //Standard Popout sizing
-        var popoutSizeCss = '.popoutSize { ' + 'height: ' + popoutHeightPixels + '; width: ' + popoutWidthPixels + '; position: fixed; ';
+        var popoutSizeCss = '.popoutSize { ' + 'height: ' + popoutHeightPixels + '; width: ' + popoutWidthPixels + '; position: fixed; z-index: 1000; ';
         //Location for the Popout
         if (popoutLocDet === 0) {
             popoutSizeCss += 'top: 0; left: 0;} '
@@ -130,9 +130,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
         head.appendChild(animatedNode);
         var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
         //Popout Animation
-        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
+        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
         //Original Animation
-        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: 1s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
+        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
 
         magicStyleTag.appendChild(popoutAnimationNode);
         magicStyleTag.appendChild(originalAnimationNode);
@@ -145,7 +145,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             setTimeout(function() {
                 sizeSet("popoutSize");
                 popoutAnimationCompleted = true;
-            }, 1000);
+            }, 750);
         }
     };
     //Animation from popout back to orignal
@@ -155,7 +155,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             setTimeout(function() {
                 sizeSet("originalSize");
                 popoutAnimationCompleted = false;
-            }, 1000);
+            }, 750);
         }
     };
     //Function for setting up whether Video Container is visible
