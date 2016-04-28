@@ -103,7 +103,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
           var originalY = locationDimension.left - (locationDimension.width * .6);
           var originalAnimationHeight = locationDimension.height;
           var originalAnimationWidth = locationDimension.width;
-        } else if (poppedout) {
+        } else if (poppedOut) {
           //The originals incase it's poppedout and they resize
           var originalX = backupOriginalX;
           var originalY = backupOriginalY;
@@ -203,11 +203,11 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Run the final function with inputs from the video
     //Only run it on larg enough screen
     window.onscroll = function() {
-        magicCheck(video)
+        magicCheck(video);
     };
     //Also run the function if the video is resize
     window.onresize = function() {
       //Probably should Add Animation Controllers here
-      magicCheck(video)
+      magicCheck(video);
     };
 });
