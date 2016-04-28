@@ -1,24 +1,24 @@
 Wistia.plugin("magic-scroll", function(video, options) {
     //Current options Available to Change
-      // containingDivId: String
-      // originalHeight: Integer
-      // originalWidth: Integer
-      // popoutHeight: Integer
-      // popoutWidth: Integer
-      // popoutLocation: String
-      // responsive: Boolean
-      // src: "/experiments/magicScrollPlugin.js"
+    // containingDivId: String
+    // originalHeight: Integer
+    // originalWidth: Integer
+    // popoutHeight: Integer
+    // popoutWidth: Integer
+    // popoutLocation: String
+    // responsive: Boolean
+    // src: "/experiments/magicScrollPlugin.js"
     //Variables to Change
     if (options.responsive) {
-      //Original height static
-      var originalHeight = "100%";
-      //Original width static
-      var originalWidth = "100%";
+        //Original height static
+        var originalHeight = "100%";
+        //Original width static
+        var originalWidth = "100%";
     } else {
-    //Original height static
-    var originalHeight = options.originalHeight;
-    //Original width static
-    var originalWidth = options.originalWidth;
+        //Original height static
+        var originalHeight = options.originalHeight;
+        //Original width static
+        var originalWidth = options.originalWidth;
     }
     //Popout height
     var popoutHeight = options.popoutHeight;
@@ -27,13 +27,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Determine where to put the popout
     var popoutLocDet = 3;
     if (options.popoutLocation === "topLeft") {
-      popoutLocDet = 0;
+        popoutLocDet = 0;
     } else if (options.popoutLocation === "bottomLeft") {
-      popoutLocDet = 1;
+        popoutLocDet = 1;
     } else if (options.popoutLocation === "topRight") {
-      popoutLocDet = 2;
+        popoutLocDet = 2;
     } else {
-      popoutLocDet = 3;
+        popoutLocDet = 3;
     }
     //Variables used in the function
     var poppedOut = false;
@@ -49,9 +49,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     //Converted Sizes to Pixels
     if (!options.responsive) {
-    var originalHeightPixels = pixelConverter(originalHeight);
-    var originalWidthPixels = pixelConverter(originalWidth);
-  }
+        var originalHeightPixels = pixelConverter(originalHeight);
+        var originalWidthPixels = pixelConverter(originalWidth);
+    }
     var popoutHeightPixels = pixelConverter(popoutHeight);
     var popoutWidthPixels = pixelConverter(popoutWidth);
     //Create functions to set the size for the original and popout
@@ -64,13 +64,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var popoutSizeCss = '.popoutSize { ' + 'height: ' + popoutHeightPixels + '; width: ' + popoutWidthPixels + '; position: fixed; ';
         //Location for the Popout
         if (popoutLocDet === 0) {
-          popoutSizeCss += 'top: 0; left: 0;} '
+            popoutSizeCss += 'top: 0; left: 0;} '
         } else if (popoutLocDet === 1) {
-          popoutSizeCss += 'bottom: 0; left: 0;} '
+            popoutSizeCss += 'bottom: 0; left: 0;} '
         } else if (popoutLocDet === 2) {
-          popoutSizeCss += 'top: 0; right: 0;} '
+            popoutSizeCss += 'top: 0; right: 0;} '
         } else if (popoutLocDet === 3) {
-          popoutSizeCss += 'bottom: 0; right: 0;} '
+            popoutSizeCss += 'bottom: 0; right: 0;} '
         }
         return popoutSizeCss;
     };
@@ -83,7 +83,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     head.appendChild(styleNode);
     //Apply Original Size to the Div
     var sizeSet = function(theDiv) {
-      originalVidContainer.setAttribute("class", theDiv);
+        originalVidContainer.setAttribute("class", theDiv);
     };
     sizeSet("originalSize");
     //Figure out its dimensions on the page
@@ -94,69 +94,69 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var backupOriginalHeight = locationDimension.height;
     var backupOriginalWidth = locationDimension.width;
     //Add the animationCSS to the page
-    var animationAddition = function(){
-      //Coordinates to input into animation
+    var animationAddition = function() {
+        //Coordinates to input into animation
         //Determine where the original popout is
-        if (!poppedOut){
-          //Incase it's resized
-          var originalX = locationDimension.top - (locationDimension.height * .6);
-          var originalY = locationDimension.left - (locationDimension.width * .6);
-          var originalAnimationHeight = locationDimension.height;
-          var originalAnimationWidth = locationDimension.width;
+        if (!poppedOut) {
+            //Incase it's resized
+            var originalX = locationDimension.top - (locationDimension.height * .6);
+            var originalY = locationDimension.left - (locationDimension.width * .6);
+            var originalAnimationHeight = locationDimension.height;
+            var originalAnimationWidth = locationDimension.width;
         } else if (poppedOut) {
-          //The originals incase it's poppedout and they resize
-          var originalX = backupOriginalX;
-          var originalY = backupOriginalY;
-          var originalAnimationHeight = backupOriginalHeight;
-          var originalAnimationWidth = backupOriginalWidth;
+            //The originals incase it's poppedout and they resize
+            var originalX = backupOriginalX;
+            var originalY = backupOriginalY;
+            var originalAnimationHeight = backupOriginalHeight;
+            var originalAnimationWidth = backupOriginalWidth;
         }
         //Where is the popout going to be
         if (popoutLocDet === 0) {
-          var popoutX = 0;
-          var popoutY = 0;
+            var popoutX = 0;
+            var popoutY = 0;
         } else if (popoutLocDet === 1) {
-          var popoutX = 0;
-          var popoutY = window.innerHeight - popoutHeight;
+            var popoutX = 0;
+            var popoutY = window.innerHeight - popoutHeight;
         } else if (popoutLocDet === 2) {
-          var popoutX = window.innerWidth - popoutWidth;
-          var popoutY = 0;
+            var popoutX = window.innerWidth - popoutWidth;
+            var popoutY = 0;
         } else if (popoutLocDet === 3) {
-          var popoutX = window.innerWidth - popoutWidth;
-          var popoutY = window.innerHeight - popoutHeight;
+            var popoutX = window.innerWidth - popoutWidth;
+            var popoutY = window.innerHeight - popoutHeight;
         }
-      //Create text node with animation CSS and add it to the Head
-      var animatedNode = document.createElement("style");
-      animatedNode.setAttribute("id", "magic-scroll-plugin-animation-css");
-      head.appendChild(animatedNode);
-      var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
-      //Popout Animation
-      var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
-      //Original Animation
-      var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: 1s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
+        //Create text node with animation CSS and add it to the Head
+        var animatedNode = document.createElement("style");
+        animatedNode.setAttribute("id", "magic-scroll-plugin-animation-css");
+        head.appendChild(animatedNode);
+        var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
+        //Popout Animation
+        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
+        //Original Animation
+        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: 1s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
 
-      magicStyleTag.appendChild(popoutAnimationNode);
-      magicStyleTag.appendChild(originalAnimationNode);
-};
+        magicStyleTag.appendChild(popoutAnimationNode);
+        magicStyleTag.appendChild(originalAnimationNode);
+    };
     animationAddition();
     //Animation to popout from the original
     var popoutTransitioner = function() {
-      if (!popoutAnimationCompleted){
-        sizeSet("popoutAnimation");
-        setTimeout(function() {
-          sizeSet("popoutSize");
-          popoutAnimationCompleted = true;
-        }, 1000);
-      }
+        if (!popoutAnimationCompleted) {
+            sizeSet("popoutAnimation");
+            setTimeout(function() {
+                sizeSet("popoutSize");
+                popoutAnimationCompleted = true;
+            }, 1000);
+        }
     };
     //Animation from popout back to orignal
     var originalTransitioner = function() {
-      if (popoutAnimationCompleted){
-        sizeSet("originalAnimation");
-        setTimeout(function() {
-          sizeSet("originalSize");
-          popoutAnimationCompleted = false;
-        }, 1000);
-      }
+        if (popoutAnimationCompleted) {
+            sizeSet("originalAnimation");
+            setTimeout(function() {
+                sizeSet("originalSize");
+                popoutAnimationCompleted = false;
+            }, 1000);
+        }
     };
     //Function for setting up whether Video Container is visible
     var screenCheck = function() {
@@ -172,13 +172,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     //Determine if the size of the screen can accept magic-scroll
     var screenLargeEnough = function() {
-      var windowWidth = window.innerWidth;
-      var windowHeight = window.innerHeight;
-      if (windowWidth > (popoutWidth * 1.5) && windowHeight > (popoutHeight * 1.5)){
-        return true
-      } else {
-        return false
-      }
+        var windowWidth = window.innerWidth;
+        var windowHeight = window.innerHeight;
+        if (windowWidth > (popoutWidth * 1.5) && windowHeight > (popoutHeight * 1.5)) {
+            return true
+        } else {
+            return false
+        }
     };
     console.log(screenLargeEnough());
     //Function for determining if viewer has scrolled past a certain point
@@ -210,10 +210,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     //Also run the function if the video is resize
     window.onresize = function() {
-      //Probably should Add Animation Controllers here
-      magicCheck(video);
-      var animationStyling = document.getElementById("magic-scroll-plugin-animation-css");
-      head.removeChild(animationStyling);
-      animationAddition();
+        //Probably should Add Animation Controllers here
+        magicCheck(video);
+        var animationStyling = document.getElementById("magic-scroll-plugin-animation-css");
+        head.removeChild(animationStyling);
+        animationAddition();
     };
 });
