@@ -147,14 +147,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
         //Location of the video
         //Question, Should I add another 8 to the top, or is that unique to my test document?
         var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
+        var universalLocationBottom = Math.abs(documentLocation.bottom - videoLocation.bottom);
         var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
+        var universalLocationRight = Math.abs(documentLocation.right - videoLocation.right);
         //Dimensions of the video
         var redeterminedVidHeight = videoLocation.height;
         var redeterminedVidWidth = videoLocation.width;
         //New object for original video location and dimensions
         var refactoredRect = {
             top: universalLocationTop,
+            bottom: universalLocationBottom,
             left: universalLocationLeft,
+            right: universalLocationRight,
             height: redeterminedVidHeight,
             width: redeterminedVidWidth
         };
