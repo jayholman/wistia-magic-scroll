@@ -41,6 +41,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalAnimationCompleted = true;
     //Divs to perform the Magic
     var originalVidContainer = document.getElementById(options.containingDivId);
+
     //Function to Convert to Pixels
     var pixelConverter = function(size) {
         var number = size.toString();
@@ -56,7 +57,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutWidthPixels = pixelConverter(popoutWidth);
     //Create functions to set the size for the original and popout
     var originalSize = function() {
-        var originalSizeCss = '.originalSize { height: ' + originalHeight + '; width: ' + originalWidth + '; position: relative; z-index: 1000;} ';
+        var originalSizeCss = '.originalSize { height: ' + originalHeight + 'px; width: ' + originalWidth + 'px; position: relative; z-index: 1000;} ';
         return originalSizeCss;
     };
     var popoutSize = function() {
@@ -88,6 +89,17 @@ Wistia.plugin("magic-scroll", function(video, options) {
     sizeSet("originalSize");
     //Figure out its dimensions on the page
     var locationDimension = originalVidContainer.getBoundingClientRect();
+    //Function to create placeholder div
+    var createPlaceholder = function(){
+      var placeHolder = document.createElement("div");
+      placeHolder.setAttribute("id", "sweetPlaceHolder");
+      placeHolder.setAttribute("class", "originalSize")
+      var parentDiv = originalVidContainer.parentElement;
+      parentDiv.insertBefore(placeHolder, originalVidContainer);
+    };
+    createPlaceholder();
+    //Function to remove placeholder div
+
     //Record the real origial location for the top left of the original container
     var backupOriginalX = locationDimension.top;
     var backupOriginalY = locationDimension.left;
@@ -170,6 +182,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             return true;
         }
     };
+    console.log(locationDimension);
     console.log(screenCheck());
     //Determine if the size of the screen can accept magic-scroll
     var screenLargeEnough = function() {
