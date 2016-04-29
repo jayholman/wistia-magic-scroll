@@ -176,8 +176,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
         //Determine where the original popout is
         if (!poppedOut) {
             //Incase it's resized
-            var originalX = locationDimension.top;
-            var originalY = locationDimension.left;
+            var originalX = locationDimension.left;
+            var originalY = locationDimension.top;
             var originalAnimationHeight = locationDimension.height;
             var originalAnimationWidth = locationDimension.width;
         } else if (poppedOut) {
