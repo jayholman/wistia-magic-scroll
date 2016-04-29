@@ -58,7 +58,14 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutWidthPixels = pixelConverter(popoutWidth);
     //Create functions to set the size for the original and popout
     var originalSize = function() {
-        var originalSizeCss = '.originalSize { height: ' + originalHeight + 'px; width: ' + originalWidth + 'px; position: relative; z-index: 1000;} ';
+        if (options.responsive){
+          var theHeight = originalHeight;
+          var theWidth = originalWidth;
+        } else {
+          var theHeight = originalHeightPixels;
+          var theWidth = originalWidthPixels;
+        }
+        var originalSizeCss = '.originalSize { height: ' + theHeight +'; width: ' + theWidth +'; position: relative; z-index: 1000;} ';
         return originalSizeCss;
     };
     var popoutSize = function() {
