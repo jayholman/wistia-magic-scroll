@@ -8,22 +8,48 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // popoutLocation: String
     // responsive: Boolean
     // src: "/experiments/magicScrollPlugin.js"
+    //Calculate the Aspect Ratio
+    var aspectRatio = video.aspect();
     //Variables to Change
+    //Original Sizing for the Video
     if (options.responsive) {
-        //Original height static
+        //Original height responsive
         var originalHeight = "100%";
-        //Original width static
+        //Original width responsive
         var originalWidth = "100%";
-    } else {
+    } else if (options.originalWidth && !options.originalHeight) {
+        var originalWidth = options.originalWidth;
+        var originalHeight = options.originalWidth / aspectRatio;
+    } else if (!options.originalWidth && options.originalHeight) {
+        var originalHeight = options.originalHeight;
+        var originalWidth = options.originalHeight * aspectRatio;
+    } else if (options.originalWidth && options.originalHeight) {
         //Original height static
         var originalHeight = options.originalHeight;
         //Original width static
         var originalWidth = options.originalWidth;
+    } else {
+        var originalHeight = video.height();
+        var originalWidth = video.width();
     }
-    //Popout height
-    var popoutHeight = options.popoutHeight;
-    //Popout width
-    var popoutWidth = options.popoutWidth;
+    //Popout Sizing for the Video
+    if (options.popoutHeight && options.popoutWidth) {
+        //Popout height
+        var popoutHeight = options.popoutHeight;
+        //Popout width
+        var popoutWidth = options.popoutWidth;
+    } else if (options.popoutWidth && !options.popoutHeight) {
+        var popoutWidth = options.popoutlWidth;
+        var popoutHeight = options.popoutWidth / aspectRatio;
+    } else if (!options.originalWidth && options.originalHeight) {
+        var popoutHeight = options.popoutHeight;
+        var popoutWidth = options.popoutHeight * aspectRatio;
+    } else {
+        //Backup Default
+        var popoutHeight = 224;
+        var popoutWidth = 400;
+    }
+
     //Determine where to put the popout
     var popoutLocDet = 3;
     if (options.popoutLocation === "topLeft") {
@@ -58,14 +84,14 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutWidthPixels = pixelConverter(popoutWidth);
     //Create functions to set the size for the original and popout
     var originalSize = function() {
-        if (options.responsive){
-          var theHeight = originalHeight;
-          var theWidth = originalWidth;
+        if (options.responsive) {
+            var theHeight = originalHeight;
+            var theWidth = originalWidth;
         } else {
-          var theHeight = originalHeightPixels;
-          var theWidth = originalWidthPixels;
+            var theHeight = originalHeightPixels;
+            var theWidth = originalWidthPixels;
         }
-        var originalSizeCss = '.originalSize { height: ' + theHeight +'; width: ' + theWidth +'; position: relative; z-index: 1000;} ';
+        var originalSizeCss = '.originalSize { height: ' + theHeight + '; width: ' + theWidth + '; position: relative; z-index: 1000;} ';
         return originalSizeCss;
     };
     var popoutSize = function() {
@@ -96,37 +122,42 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     sizeSet("originalSize");
     //Function to create placeholder div
-    var createPlaceholder = function(){
-      var placeHolder = document.createElement("div");
-      placeHolder.setAttribute("id", "sweetPlaceHolder");
-      placeHolder.setAttribute("class", "originalSize")
-      var parentDiv = originalVidContainer.parentElement;
-      parentDiv.insertBefore(placeHolder, originalVidContainer);
-      placeHolderExists = true;
+    var createPlaceholder = function() {
+        var placeHolder = document.createElement("div");
+        placeHolder.setAttribute("id", "sweetPlaceHolder");
+        placeHolder.setAttribute("class", "originalSize")
+        var parentDiv = originalVidContainer.parentElement;
+        parentDiv.insertBefore(placeHolder, originalVidContainer);
+        placeHolderExists = true;
     };
     //Function to remove placeholder div
-    var exterminatePlaceholder = function(){
-      var placeHolder = document.getElementById("sweetPlaceHolder");
-      var parentDiv = placeHolder.parentElement;
-      parentDiv.removeChild(placeHolder);
-      placeHolderExists = false;
+    var exterminatePlaceholder = function() {
+        var placeHolder = document.getElementById("sweetPlaceHolder");
+        var parentDiv = placeHolder.parentElement;
+        parentDiv.removeChild(placeHolder);
+        placeHolderExists = false;
     };
     //Figure out the video's dimensions on the page and it's location
-    var skynetLocator = function () {
-      //Locate the video on the page
-      var videoLocation = originalVidContainer.getBoundingClientRect();
-      //Discover the page's overall dimensions
-      var documentLocation = document.body.getBoundingClientRect();
-      //Location of the video
-      //Question, Should I add another 8 to the top, or is that unique to my test document?
-      var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
-      var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
-      //Dimensions of the video
-      var redeterminedVidHeight = videoLocation.height;
-      var redeterminedVidWidth = videoLocation.width;
-      //New object for original video location and dimensions
-      var refactoredRect = {top: universalLocationTop, left: universalLocationLeft, height: redeterminedVidHeight, width: redeterminedVidWidth};
-      return refactoredRect;
+    var skynetLocator = function() {
+        //Locate the video on the page
+        var videoLocation = originalVidContainer.getBoundingClientRect();
+        //Discover the page's overall dimensions
+        var documentLocation = document.body.getBoundingClientRect();
+        //Location of the video
+        //Question, Should I add another 8 to the top, or is that unique to my test document?
+        var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
+        var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
+        //Dimensions of the video
+        var redeterminedVidHeight = videoLocation.height;
+        var redeterminedVidWidth = videoLocation.width;
+        //New object for original video location and dimensions
+        var refactoredRect = {
+            top: universalLocationTop,
+            left: universalLocationLeft,
+            height: redeterminedVidHeight,
+            width: redeterminedVidWidth
+        };
+        return refactoredRect;
     };
     var locationDimension = skynetLocator();
     //Record the real origial location for the top left of the original container
@@ -183,8 +214,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutTransitioner = function() {
         if (!popoutAnimationCompleted) {
             sizeSet("magicScrollPopoutAnimation");
-            if(!placeHolderExists){
-              createPlaceholder();
+            if (!placeHolderExists) {
+                createPlaceholder();
             }
             setTimeout(function() {
                 sizeSet("popoutSize");
@@ -197,8 +228,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
         if (popoutAnimationCompleted) {
             sizeSet("magicScrollOriginalAnimation");
             setTimeout(function() {
-                if (placeHolderExists){
-                  exterminatePlaceholder();
+                if (placeHolderExists) {
+                    exterminatePlaceholder();
                 }
                 sizeSet("originalSize");
                 popoutAnimationCompleted = false;
