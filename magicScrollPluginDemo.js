@@ -253,7 +253,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var currentBottom = currentTop + window.innerHeight;
         var currentLeft = window.scrollX;
         var currentRight = window.scrollX + window.innerWidth;
-        console.log(currentRight + " " + videoRight)
         //Is the Video Above the Scroll Top
         if (videoTop > currentTop && videoBottom < currentBottom && videoLeft > currentLeft && videoRight < currentRight) {
             return true;
