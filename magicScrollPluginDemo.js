@@ -164,9 +164,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
         head.appendChild(animatedNode);
         var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
         //Popout Animation
-        var popoutAnimationNode = document.createTextNode(".popoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
+        var popoutAnimationNode = document.createTextNode(".magicScrollPopoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;}  100% {  top: " + popoutY + ";  left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";} }");
         //Original Animation
-        var originalAnimationNode = document.createTextNode(".originalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
+        var originalAnimationNode = document.createTextNode(".magicScrollOriginalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingBack { 0% { top: " + popoutY + "; left: " + popoutX + "; height: " + popoutHeightPixels + "; width: " + popoutWidthPixels + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + originalAnimationHeight + "px; width: " + originalAnimationWidth + "px;} }");
 
         magicStyleTag.appendChild(popoutAnimationNode);
         magicStyleTag.appendChild(originalAnimationNode);
@@ -175,7 +175,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Animation to popout from the original
     var popoutTransitioner = function() {
         if (!popoutAnimationCompleted) {
-            sizeSet("popoutAnimation");
+            sizeSet("magicScrollPopoutAnimation");
             if(!placeHolderExists){
               createPlaceholder();
             }
@@ -188,7 +188,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Animation from popout back to orignal
     var originalTransitioner = function() {
         if (popoutAnimationCompleted) {
-            sizeSet("originalAnimation");
+            sizeSet("magicScrollOriginalAnimation");
             setTimeout(function() {
                 if (placeHolderExists){
                   exterminatePlaceholder();
