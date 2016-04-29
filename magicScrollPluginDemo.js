@@ -139,9 +139,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
         placeHolderExists = false;
     };
     //Figure out the video's dimensions on the page and it's location
-    var skynetLocator = function() {
+    var skynetLocator = function(john) {
         //Locate the video on the page
-        var videoLocation = originalVidContainer.getBoundingClientRect();
+        var videoLocation = john.getBoundingClientRect();
         //Discover the page's overall dimensions
         var documentLocation = document.body.getBoundingClientRect();
         //Dimensions of the video
@@ -164,7 +164,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         };
         return refactoredRect;
     };
-    var locationDimension = skynetLocator();
+    var locationDimension = skynetLocator(originalVidContainer);
     //Record the real origial location for the top left of the original container
     var backupOriginalX = locationDimension.top;
     var backupOriginalY = locationDimension.left;
@@ -172,8 +172,14 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var backupOriginalWidth = locationDimension.width;
     //Add the animationCSS to the page
     var animationAddition = function() {
-        //Coordinates to input into animation
-        //Determine where the original popout is
+        //Isolate Top and Left coordinates for the Window
+        currentViewingWindowTop = window.scrollY;
+        currentViewingWindowBottom = window.scrollY + window.innerHeight;
+        currentViewingWindowLeft = window.scrollX;
+        currentViewingWindowRight = window.scrollX + window.innerWidth;
+        //Create If Else Tree for where to send the video (if it's too far in one dimension then, make it 0, otherwise find the difference)
+
+            //Determine where the original popout is
         if (!poppedOut) {
             //Incase it's resized
             var originalX = locationDimension.left;
@@ -245,9 +251,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var screenCheck = function() {
         //Dimensions for the video
         var videoTop = locationDimension.top + (locationDimension.height * .6);
-        var videoBottom = locationDimension.bottom - (locationDimension.height *.6);
+        var videoBottom = locationDimension.bottom - (locationDimension.height * .6);
         var videoLeft = locationDimension.left + (locationDimension.width * .6);
-        var videoRight = locationDimension.right - (locationDimension.width *.6);
+        var videoRight = locationDimension.right - (locationDimension.width * .6);
         //Location of the top left of window
         var currentTop = window.scrollY;
         var currentBottom = currentTop + window.innerHeight;
@@ -257,7 +263,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         if (videoTop > currentTop && videoBottom < currentBottom && videoLeft > currentLeft && videoRight < currentRight) {
             return true;
         } else {
-          return false;
+            return false;
         }
     };
     console.log(locationDimension);
