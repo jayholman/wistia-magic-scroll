@@ -144,15 +144,15 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var videoLocation = originalVidContainer.getBoundingClientRect();
         //Discover the page's overall dimensions
         var documentLocation = document.body.getBoundingClientRect();
-        //Location of the video
-        //Question, Should I add another 8 to the top, or is that unique to my test document?
-        var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
-        var universalLocationBottom = Math.abs(documentLocation.bottom - videoLocation.bottom);
-        var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
-        var universalLocationRight = Math.abs(documentLocation.right - videoLocation.right);
         //Dimensions of the video
         var redeterminedVidHeight = videoLocation.height;
         var redeterminedVidWidth = videoLocation.width;
+        //Location of the video
+        //Question, Should I add another 8 to the top, or is that unique to my test document?
+        var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
+        var universalLocationBottom = Math.abs(documentLocation.top - videoLocation.bottom);
+        var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
+        var universalLocationRight = Math.abs(documentLocation.left - videoLocation.right);
         //New object for original video location and dimensions
         var refactoredRect = {
             top: universalLocationTop,
@@ -243,14 +243,22 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     //Function for setting up whether Video Container is visible
     var screenCheck = function() {
-        var videoHeight = locationDimension.top + (locationDimension.height * .6);
-        var videoWidth = locationDimension.left + (locationDimension.width * .6);
-        var currentHeight = window.scrollY;
-        var currentWidth = window.scrollX;
-        if (videoHeight < currentHeight || videoWidth < currentWidth) {
-            return false;
-        } else {
+        //Dimensions for the video
+        var videoTop = locationDimension.top + (locationDimension.height * .6);
+        var videoBottom = locationDimension.bottom - (locationDimension.height *.6);
+        var videoLeft = locationDimension.left + (locationDimension.width * .6);
+        var videoRight = locationDimension.right - (locationDimension.width *.6);
+        //Location of the top left of window
+        var currentTop = window.scrollY;
+        var currentBottom = currentTop + window.innerHeight;
+        var currentLeft = window.scrollX;
+        var currentRight = window.scrollX + window.innerWidth;
+        console.log(currentRight + " " + videoRight)
+        //Is the Video Above the Scroll Top
+        if (videoTop > currentTop && videoBottom < currentBottom && videoLeft > currentLeft && videoRight < currentRight) {
             return true;
+        } else {
+          return false;
         }
     };
     console.log(locationDimension);
