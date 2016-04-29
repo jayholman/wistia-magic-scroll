@@ -87,7 +87,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         originalVidContainer.setAttribute("class", theDiv);
     };
     sizeSet("originalSize");
-    //Figure out its dimensions on the page
+    //Figure out the video's dimensions on the page and it's location
     var locationDimension = originalVidContainer.getBoundingClientRect();
     //Function to create placeholder div
     var createPlaceholder = function(){
