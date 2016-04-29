@@ -87,8 +87,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
         originalVidContainer.setAttribute("class", theDiv);
     };
     sizeSet("originalSize");
-    //Figure out the video's dimensions on the page and it's location
-    var locationDimension = originalVidContainer.getBoundingClientRect();
     //Function to create placeholder div
     var createPlaceholder = function(){
       var placeHolder = document.createElement("div");
@@ -100,6 +98,24 @@ Wistia.plugin("magic-scroll", function(video, options) {
     createPlaceholder();
     //Function to remove placeholder div
 
+    //Figure out the video's dimensions on the page and it's location
+    var skynetLocator = function () {
+      //Locate the video on the page
+      var videoLocation = originalVidContainer.getBoundingClientRect();
+      //Discover the page's overall dimensions
+      var documentLocation = document.body.getBoundingClientRect();
+      //Location of the video
+      //Question, Should I add another 8 to the top, or is that unique to my test document?
+      var universalLocationTop = Math.abs(documentLocation.top - videoLocation.top);
+      var universalLocationLeft = Math.abs(documentLocation.left - videoLocation.left);
+      //Dimensions of the video
+      var redeterminedVidHeight = videoLocation.height;
+      var redeterminedVidWidth = videoLocation.width;
+      //New object for original video location and dimensions
+      var refactoredRect = {top: universalLocationTop, left: universalLocationLeft, height: redeterminedVidHeight, width: redeterminedVidWidth};
+      return refactoredRect;
+    };
+    var locationDimension = skynetLocator();
     //Record the real origial location for the top left of the original container
     var backupOriginalX = locationDimension.top;
     var backupOriginalY = locationDimension.left;
