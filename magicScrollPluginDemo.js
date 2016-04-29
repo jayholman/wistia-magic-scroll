@@ -39,6 +39,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var poppedOut = false;
     var popoutAnimationCompleted = false;
     var originalAnimationCompleted = true;
+    var placeHolderExists = false;
     //Divs to perform the Magic
     var originalVidContainer = document.getElementById(options.containingDivId);
 
@@ -94,10 +95,15 @@ Wistia.plugin("magic-scroll", function(video, options) {
       placeHolder.setAttribute("class", "originalSize")
       var parentDiv = originalVidContainer.parentElement;
       parentDiv.insertBefore(placeHolder, originalVidContainer);
+      placeHolderExists = true;
     };
-    createPlaceholder();
     //Function to remove placeholder div
-
+    var exterminatePlaceholder = function(){
+      var placeHolder = document.getElementById("sweetPlaceHolder");
+      var parentDiv = placeHolder.parentElement;
+      parentDiv.removeChild(placeHolder);
+      placeHolderExists = false;
+    };
     //Figure out the video's dimensions on the page and it's location
     var skynetLocator = function () {
       //Locate the video on the page
@@ -170,6 +176,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutTransitioner = function() {
         if (!popoutAnimationCompleted) {
             sizeSet("popoutAnimation");
+            if(!placeHolderExists){
+              createPlaceholder();
+            }
             setTimeout(function() {
                 sizeSet("popoutSize");
                 popoutAnimationCompleted = true;
@@ -181,6 +190,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
         if (popoutAnimationCompleted) {
             sizeSet("originalAnimation");
             setTimeout(function() {
+                if (placeHolderExists){
+                  exterminatePlaceholder();
+                }
                 sizeSet("originalSize");
                 popoutAnimationCompleted = false;
             }, 750);
