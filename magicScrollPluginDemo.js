@@ -165,34 +165,41 @@ Wistia.plugin("magic-scroll", function(video, options) {
         return refactoredRect;
     };
     var locationDimension = skynetLocator(originalVidContainer);
-    //Record the real origial location for the top left of the original container
-    var backupOriginalX = locationDimension.top;
-    var backupOriginalY = locationDimension.left;
-    var backupOriginalHeight = locationDimension.height;
-    var backupOriginalWidth = locationDimension.width;
+
     //Add the animationCSS to the page
     var animationAddition = function() {
+        //default original values
+        var originalX = locationDimension.left;
+        var originalY = locationDimension.top;
         //Isolate Top and Left coordinates for the Window
         currentViewingWindowTop = window.scrollY;
         currentViewingWindowBottom = window.scrollY + window.innerHeight;
         currentViewingWindowLeft = window.scrollX;
         currentViewingWindowRight = window.scrollX + window.innerWidth;
-        //Create If Else Tree for where to send the video (if it's too far in one dimension then, make it 0, otherwise find the difference)
-
-            //Determine where the original popout is
-        if (!poppedOut) {
-            //Incase it's resized
-            var originalX = locationDimension.left;
-            var originalY = locationDimension.top;
-            var originalAnimationHeight = locationDimension.height;
-            var originalAnimationWidth = locationDimension.width;
-        } else if (poppedOut) {
-            //The originals incase it's poppedout and they resize
-            var originalX = backupOriginalX;
-            var originalY = backupOriginalY;
-            var originalAnimationHeight = backupOriginalHeight;
-            var originalAnimationWidth = backupOriginalWidth;
+        //Create If/Else Tree for where to send the video to/from (if it's too far in one dimension then, make it 0, otherwise find the difference)
+        //Determine if the video is above or below the current viewport, if it is, apply 0 to to the Y fixed value
+        if (currentViewingWindowTop > locationDimension.top) {
+            //video is above the current viewport so the top fixed value is 0
+            originalY = 0;
+        } else if (currentViewingWindowBottom < locationDimension.bottom) {
+            //video is below the current viewport so the bottom fixed value is 0
+            originalY = 0;
+        } else {
+            //video is at the same level as the viewport, fixed level needs to be calculated. scrollY is 0, so difference is the fixed value
+            originalY = currentViewingWindowTop - locationDimension.top;
         }
+        //Determine if the video is left or right of the current viewport, if it is, apply 0 to the X fixed value
+        if (currentViewingWindowRight < locationDimension.right) {
+            //video is right of the current viewport so the right fixed value is 0
+            originalX = 0;
+        } else if (currentViewingWindowLeft > locationDimension.left) {
+            //video is left of the current viewport so the left fixed value is 0
+            originalX = 0;
+        } else {
+            //video is at the same level as the viewport, fixed level needs to be calculated. scrollX is 0, so difference is the fixed value
+            originalX = currentViewingWindowLeft - locationDimension.left;
+        }
+
         //Where is the popout going to be
         if (popoutLocDet === 0) {
             var popoutX = 0;
@@ -207,6 +214,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
             var popoutX = window.innerWidth - popoutWidth;
             var popoutY = window.innerHeight - popoutHeight;
         }
+
+        //Animation Initializer, create variable that triggers once at the beginning. Afterwards, remove the former animation scripts in order to insert new ones
+        
+
         //Create text node with animation CSS and add it to the Head
         var animatedNode = document.createElement("style");
         animatedNode.setAttribute("id", "magic-scroll-plugin-animation-css");
