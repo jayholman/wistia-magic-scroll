@@ -1,13 +1,14 @@
 Wistia.plugin("magic-scroll", function(video, options) {
     //Current options Available to Change
-    // containingDivId: String
+    // video hashed_id -required
+    // containingDivId: String - required
     // originalHeight: Integer
     // originalWidth: Integer
     // popoutHeight: Integer
     // popoutWidth: Integer
     // popoutLocation: String
     // responsive: Boolean
-    // src: "/experiments/magicScrollPlugin.js"
+    // src: "/experiments/magicScrollPlugin.js" - required
     //Calculate the Aspect Ratio
     var aspectRatio = video.aspect();
     //Variables to Change
@@ -227,10 +228,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalTransitioner = function() {
         if (popoutAnimationCompleted) {
             sizeSet("magicScrollOriginalAnimation");
-            if (placeHolderExists) {
-                exterminatePlaceholder();
-            }
             setTimeout(function() {
+                if (placeHolderExists) {
+                    exterminatePlaceholder();
+                }
                 sizeSet("originalSize");
                 popoutAnimationCompleted = false;
             }, 750);
