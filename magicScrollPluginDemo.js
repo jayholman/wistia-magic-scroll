@@ -227,10 +227,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalTransitioner = function() {
         if (popoutAnimationCompleted) {
             sizeSet("magicScrollOriginalAnimation");
+            if (placeHolderExists) {
+                exterminatePlaceholder();
+            }
             setTimeout(function() {
-                if (placeHolderExists) {
-                    exterminatePlaceholder();
-                }
                 sizeSet("originalSize");
                 popoutAnimationCompleted = false;
             }, 750);
