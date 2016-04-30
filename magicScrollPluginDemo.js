@@ -288,8 +288,39 @@ Wistia.plugin("magic-scroll", function(video, options) {
             return false;
         }
     };
+    //Function for checking whether to initialize animation
+    var animationCheck = function() {
+        //Initial Crossover location to trigger reset
+        var videoTop = locationDimension.top - 5;
+        var videoBottom = locationDimension.bottom + 5;
+        var videoLeft = locationDimension.left - 5;
+        var videoRight = locationDimension.right + 5;
+        //5px Zone around the video that triggers an animation reset
+        var videoTop2 = locationDimension.top;
+        var videoBottom2 = locationDimension.bottom;
+        var videoLeft2 = locationDimension.left;
+        var videoRight2 = locationDimension.right;
+        //Location of the top left of window
+        var currentTop = window.scrollY;
+        var currentBottom = currentTop + window.innerHeight;
+        var currentLeft = window.scrollX;
+        var currentRight = window.scrollX + window.innerWidth;
+        //Is the Video Above the Scroll Top
+        if (videoTop > currentTop && videoTop2 < currentTop) {
+            return true;
+        } else if (videoBottom < currentBottom && videoBottom2 > currentBottom) {
+            return true;
+        } else if (videoLeft > currentLeft && videoLeft2 < currentLeft) {
+            return true;
+        } else if (videoRight < currentRight && videoRight2 > currentRight) {
+            return true;
+        } else {
+            return false;
+        }
+    };
     console.log(locationDimension);
     console.log(screenCheck());
+    console.log(animationCheck());
     //Determine if the size of the screen can accept magic-scroll
     var screenLargeEnough = function() {
         var windowWidth = window.innerWidth;
@@ -323,10 +354,27 @@ Wistia.plugin("magic-scroll", function(video, options) {
             poppedOut = false;
         }
     };
+
+    //Animaton Initializing Function
+    var animationInitializer = function() {
+        console.log("Zone for animation initialization is visible: " + animationCheck());
+        if (!animationCheck() && video.state() === "playing" && screenLargeEnough()) {
+            //Set Size for permanent-ish Popout Position div
+            resetAnimation();
+        } else if (!screenLargeEnough() && !screenCheck()) {
+            //Set Size for permanent-ish Original Position div
+            resetAnimation();
+        } else {
+            //Set Size for permanent-ish Original Position div
+            resetAnimation();
+        }
+    };
+
     //Run the final function with inputs from the video
     //Only run it on larg enough screen
     window.onscroll = function() {
         magicCheck(video);
+        animationInitializer();
     };
     //Also run the function if the video is resize
     window.onresize = function() {
