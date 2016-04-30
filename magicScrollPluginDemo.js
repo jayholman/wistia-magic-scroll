@@ -171,6 +171,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
         //default original values
         var originalX = locationDimension.left;
         var originalY = locationDimension.top;
+        var originalAnimationHeight = locationDimension.height;
+        var originalAnimationWidth = locationDimension.width;
         //Isolate Top and Left coordinates for the Window
         currentViewingWindowTop = window.scrollY;
         currentViewingWindowBottom = window.scrollY + window.innerHeight;
@@ -216,7 +218,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         }
 
         //Animation Initializer, create variable that triggers once at the beginning. Afterwards, remove the former animation scripts in order to insert new ones
-        
+
 
         //Create text node with animation CSS and add it to the Head
         var animatedNode = document.createElement("style");
@@ -231,7 +233,16 @@ Wistia.plugin("magic-scroll", function(video, options) {
         magicStyleTag.appendChild(popoutAnimationNode);
         magicStyleTag.appendChild(originalAnimationNode);
     };
+    //Create an initial animation
     animationAddition();
+
+    //Function for Removing and then adding the animation
+    var resetAnimation = function() {
+        var animationStyling = document.getElementById("magic-scroll-plugin-animation-css");
+        head.removeChild(animationStyling);
+        animationAddition();
+    };
+
     //Animation to popout from the original
     var popoutTransitioner = function() {
         if (!popoutAnimationCompleted) {
@@ -321,8 +332,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
     window.onresize = function() {
         //Probably should Add Animation Controllers here
         magicCheck(video);
-        var animationStyling = document.getElementById("magic-scroll-plugin-animation-css");
-        head.removeChild(animationStyling);
-        animationAddition();
+        resetAnimation();
     };
 });
