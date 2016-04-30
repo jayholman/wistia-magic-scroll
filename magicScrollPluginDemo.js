@@ -281,7 +281,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var currentBottom = currentTop + window.innerHeight;
         var currentLeft = window.scrollX;
         var currentRight = window.scrollX + window.innerWidth;
-        //Is the Video Above the Scroll Top
+        //Is the Video Outside of the Window
         if (videoTop > currentTop && videoBottom < currentBottom && videoLeft > currentLeft && videoRight < currentRight) {
             return true;
         } else {
@@ -290,32 +290,55 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
     //Function for checking whether to initialize animation
     var animationCheck = function() {
-        //Initial Crossover location to trigger reset
-        var videoTop = locationDimension.top - 5;
-        var videoBottom = locationDimension.bottom + 5;
-        var videoLeft = locationDimension.left - 5;
-        var videoRight = locationDimension.right + 5;
-        //5px Zone around the video that triggers an animation reset
-        var videoTop2 = locationDimension.top;
-        var videoBottom2 = locationDimension.bottom;
-        var videoLeft2 = locationDimension.left;
-        var videoRight2 = locationDimension.right;
+        //Actual Dimensions of the original video box
+        var videoTop = locationDimension.top;
+        var videoBottom = locationDimension.bottom;
+        var videoLeft = locationDimension.left;
+        var videoRight = locationDimension.right;
+        //Outer 5px Zone to begin trigger popout initialization
+        var videoTop2 = locationDimension.top - 5;
+        var videoBottom2 = locationDimension.bottom + 5;
+        var videoLeft2 = locationDimension.left - 5;
+        var videoRight2 = locationDimension.right + 5;
+        //Center 5 px box within the video to trigger popout initialization if video is not poppedout
+        var videoTop3 = ((locationDimension.top - 2.5) + (locationDimension.height / 2));
+        var videoBottom3 = ((locationDimension.bottom + 2.5) - (locationDimension.height / 2));
+        var videoLeft3 = ((locationDimension.left - 2.5) + (locationDimension.width / 2));
+        var videoRight3 = ((locationDimension.right + 2.5) - (locationDimension.width / 2));
         //Location of the top left of window
         var currentTop = window.scrollY;
         var currentBottom = currentTop + window.innerHeight;
         var currentLeft = window.scrollX;
         var currentRight = window.scrollX + window.innerWidth;
-        //Is the Video Above the Scroll Top
-        if (videoTop > currentTop && videoTop2 < currentTop) {
-            return true;
-        } else if (videoBottom < currentBottom && videoBottom2 > currentBottom) {
-            return true;
-        } else if (videoLeft > currentLeft && videoLeft2 < currentLeft) {
-            return true;
-        } else if (videoRight < currentRight && videoRight2 > currentRight) {
-            return true;
+        //When the video is popped out, initialize animation if it the scroll crosses 5px zone around video
+        if (poppedOut) {
+            if ((currentLeft > videoLeft2 && currentLeft < videoRight2) || (currentRight > videoLeft2 && currentRight < videoRight2)) {
+                if (currentTop > videoTop && currentTop < videoTop2) {
+                    return true;
+                } else if (currentBottom > videoBottom && currentBottom < videoBottom2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if ((currentTop > videoTop2 && currentTop < videoBottom2) || (currentBottom > videoTop2 && currentBottom < videoBottom2)) {
+                if (currentLeft < videoLeft && currentLeft > videoLeft2) {
+                    return true;
+                } else if (currentRight > videoRight && currentRight < videoRight2) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else {
-            return false;
+            if (currentTop > videoTop3 && currentTop < videoBottom3) {
+                return true;
+            } else if (currentLeft > videoLeft3 && currentLeft < videoRight3) {
+                return true;
+            } else {
+                return false;
+            }
         }
     };
     console.log(locationDimension);
