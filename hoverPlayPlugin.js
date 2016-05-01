@@ -8,18 +8,20 @@ Wistia.plugin("hover-play", function(video, options) {
     var videoHashedId = video.hashedId();
     //Grab the video container
     var videoContainer = document.getElementsByClassName("wistia_async_" + videoHashedId)[0];
-    //Video Dimensions
-    var videoHeight = video.height();
-    var videoWidth = video.width();
-    //Is the video playing
-    var videoPlaying = false;
-    videoContainer.onmouseover = function() {
-        video.play();
-        videoPlaying = true;
-    };
-    videoContainer.onmouseout = function() {
-        video.pause();
-        videoPlaying = false;
-    };
 
+    document.onmousemove = function() {
+      var videoPlaying = false;
+
+      var videoLocationInViewport = videoContainer.getBoundingClientRect();
+
+      var mouseX = event.clientX;
+      var mouseY = event.clientY;
+
+      if ((mouseX < videoLocationInViewport.right && mouseX > videoLocationInViewport.left) && (mouseY < videoLocationInViewport.bottom && mouseY > videoLocationInViewport.top) && !videoPlaying) {
+        video.play();
+      } else {
+        video.pause();
+      }
+
+    };
 });
