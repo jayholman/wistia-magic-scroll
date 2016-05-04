@@ -207,54 +207,65 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
 
     //Calculate User position within the light grid
-    var lightGridDimensions = function {
-      //Video Addition Factor
-      var videoFactorY = (window.innerHeight - locationDimension.height) / 2;
-      var videoFactorX = (window.innerWidth - locationDimension.width) / 2;
-      //Create the extended lightGrid box around the original video
-      var topGrid = locationDimension.top - videoFactorY;
-      var bottomGrid = locationDimension.bottom + videoFactorY;
-      var leftGrid = locationDimension.left - videoFactorX;
-      var rightGrid = locationDimension.right + videoFactorX;
-      //Grid Number
-      var location = 1;
-      //Current Location, may change to be the center of the box
-      var currentCenterTop = window.scrollY + (window.innerHeight / 2);
-      var currentCenterLeft = window.scrollX + (window.innerWidth / 2);
-      //lightGrid: Staying Positive
-      zeroTheorem(topGrid);
-      zeroTheorem(bottomGrid);
-      zeroTheorem(leftGrid);
-      zeroTheorem(rightGrid);
+    var lightGridDimensions = function() {
+        //Video Addition Factor
+        var videoFactorY = (window.innerHeight - locationDimension.height) / 2;
+        var videoFactorX = (window.innerWidth - locationDimension.width) / 2;
+        //Create the extended lightGrid box around the original video
+        var topGrid = locationDimension.top - videoFactorY;
+        var bottomGrid = locationDimension.bottom + videoFactorY;
+        var leftGrid = locationDimension.left - videoFactorX;
+        var rightGrid = locationDimension.right + videoFactorX;
+        //Grid Number
+        var location = 1;
+        //Current Location, may change to be the center of the box
+        var currentCenterTop = window.scrollY + (window.innerHeight / 2);
+        var currentCenterLeft = window.scrollX + (window.innerWidth / 2);
+        //lightGrid: Staying Positive
+        zeroTheorem(topGrid);
+        zeroTheorem(bottomGrid);
+        zeroTheorem(leftGrid);
+        zeroTheorem(rightGrid);
 
-      if (location != 1 && currentCenterTop <= topGrid && currentCenterLeft <= leftGrid) {
-        //Down to the right
-        location = 1;
-      } else if (location !2 && currentCenterTop <= topGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
-        //Straight down
-        location = 2;
-      } else if (location !3 && currentCenterTop <= topGrid && currentCenterLeft >= rightGrid) {
-        //Down to the left
-        location = 3;
-      } else if (location !4 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft <= leftGrid) {
-        //Straight right
-        location = 4;
-      } else if (location !5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft >= rightGrid) {
-        //Stright left
-        location = 5;
-      } else if (location !6 && currentCenterTop >= bottomGrid && currentCenterLeft <= leftGrid) {
-        //Up to the Right
-        location = 6;
-      } else if (location !7 && currentCenterTop >= bottomGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
-        //Straight Up
-        location = 7;
-      } else if (location !8 && currentCenterTop >= bottomGrid && currentCenterLeft >= rightGrid ) {
-        //Up to the Left
-        location = 8;
-      }
+        if (location != 1 && currentCenterTop <= topGrid && currentCenterLeft <= leftGrid) {
+            //Down to the right
+            return 1;
+            location = 1;
+        } else if (location != 2 && currentCenterTop <= topGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
+            //Straight down
+            return 2;
+            location = 2;
+        } else if (location != 3 && currentCenterTop <= topGrid && currentCenterLeft >= rightGrid) {
+            //Down to the left
+            return 3;
+            location = 3;
+        } else if (location != 4 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft <= leftGrid) {
+            //Straight right
+            return 4;
+            location = 4;
+        } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft >= rightGrid) {
+            //Stright left
+            return 5;
+            location = 5;
+        } else if (location != 6 && currentCenterTop >= bottomGrid && currentCenterLeft <= leftGrid) {
+            //Up to the Right
+            return 6;
+            location = 6;
+        } else if (location != 7 && currentCenterTop >= bottomGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
+            //Straight Up
+            return 7;
+            location = 7;
+        } else if (location != 8 && currentCenterTop >= bottomGrid && currentCenterLeft >= rightGrid) {
+            //Up to the Left
+            return 8;
+            location = 8;
+        }
     };
 
-
+    var animationInitializer = function() {
+        var location = lightGridDimensions();
+        console.log("Light Grid Location: " + location);
+    };
 
     //Function for logging into the console to see if everything is working properly
     var magicSystemCheck = function() {
@@ -289,12 +300,14 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     //Run the final function when the visitor scrolls or resizes the window
     window.onscroll = function() {
-        magicSystemCheck();
+        // magicSystemCheck();
         magicCheck();
+        animationInitializer();
     };
     window.onresize = function() {
         //Probably should Add Animation Controllers here
-        magicSystemCheck();
+        // magicSystemCheck();
         magicCheck();
+        animationInitializer();
     };
 });
