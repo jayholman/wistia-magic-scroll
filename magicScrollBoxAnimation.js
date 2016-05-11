@@ -29,9 +29,11 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //How to grab the video container
     var originalVidContainer = document.getElementById(options.containingDivId);
 
-    //Transformations for the variables
+    //Animation Information
     var numPopHeight = popoutHeight;
     var numPopWidth = popoutWidth;
+    //Grid Number
+    var location = 1;
     //Function for converting to Pixel Strings
     var pixelConverter = function(size) {
         var number = size.toString();
@@ -219,12 +221,12 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var popoutTop = bottom;
         var popoutLeft = right;
         if (popoutLocation === 0) {
-          popoutTop = top;
-          popoutLeft = left;
-        } else if (popoutLocation === 1){
-          popoutLeft = left;
-        } else if (popoutLocation === 2){
-          popoutTop = top;
+            popoutTop = top;
+            popoutLeft = left;
+        } else if (popoutLocation === 1) {
+            popoutLeft = left;
+        } else if (popoutLocation === 2) {
+            popoutTop = top;
         }
 
         //Set up the style
@@ -243,7 +245,15 @@ Wistia.plugin("magic-scroll", function(video, options) {
         magicStyleTag.appendChild(originalAnimationNode);
     };
 
-animationCreation(1, 2);
+    animationCreation(locationDimension.left, locationDimension.top);
+
+    //Function to remove placeholder div
+    var destroyAnimation = function() {
+        var animationStyle = document.getElementById("magic-scroll-plugin-animation-css");
+        var parentDiv = animationStyle.parentElement;
+        parentDiv.removeChild(animationStyle);
+    };
+
     //Calculate User position within the light grid
     var lightGridDimensions = function() {
         //Video Addition Factor
@@ -254,8 +264,6 @@ animationCreation(1, 2);
         var bottomGrid = locationDimension.bottom + videoFactorY;
         var leftGrid = locationDimension.left - videoFactorX;
         var rightGrid = locationDimension.right + videoFactorX;
-        //Grid Number
-        var location = 1;
         //Current Location, may change to be the center of the box
         var currentCenterTop = window.scrollY + (window.innerHeight / 2);
         var currentCenterLeft = window.scrollX + (window.innerWidth / 2);
@@ -267,41 +275,56 @@ animationCreation(1, 2);
 
         if (location != 1 && currentCenterTop <= topGrid && currentCenterLeft <= leftGrid) {
             //Down to the right
-            return 1;
             location = 1;
+            destroyAnimation();
+            animationCreation(window.innerWidth, window.innerHeight);
+            return 1;
         } else if (location != 2 && currentCenterTop <= topGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
             //Straight down
-            return 2;
             location = 2;
+            destroyAnimation();
+            animationCreation((window.innerWidth / 2), window.innerHeight);
+            return 2;
         } else if (location != 3 && currentCenterTop <= topGrid && currentCenterLeft >= rightGrid) {
             //Down to the left
-            return 3;
             location = 3;
+            destroyAnimation();
+            animationCreation(0, window.innerHeight);
+            return 3;
         } else if (location != 4 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft <= leftGrid) {
             //Straight right
-            return 4;
             location = 4;
+            destroyAnimation();
+            animationCreation(window.innerWidth, (window.innerHeight / 2));
+            return 4;
         } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft >= rightGrid) {
             //Stright left
-            return 5;
             location = 5;
+            destroyAnimation();
+            animationCreation(0, (window.innerHeight / 2));
+            return 5;
         } else if (location != 6 && currentCenterTop >= bottomGrid && currentCenterLeft <= leftGrid) {
             //Up to the Right
-            return 6;
             location = 6;
+            destroyAnimation();
+            animationCreation(window.innerWidth, 0);
+            return 6;
         } else if (location != 7 && currentCenterTop >= bottomGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
             //Straight Up
-            return 7;
             location = 7;
+            destroyAnimation();
+            animationCreation((window.innerWidth / 2), 0);
+            return 7;
         } else if (location != 8 && currentCenterTop >= bottomGrid && currentCenterLeft >= rightGrid) {
             //Up to the Left
-            return 8;
             location = 8;
+            destroyAnimation();
+            animationCreation(0, 0);
+            return 8;
         }
     };
 
     var animationInitializer = function() {
-        var location = lightGridDimensions();
         console.log("Light Grid Location: " + location);
     };
 
@@ -341,11 +364,13 @@ animationCreation(1, 2);
         // magicSystemCheck();
         magicCheck();
         animationInitializer();
+        lightGridDimensions();
     };
     window.onresize = function() {
         //Probably should Add Animation Controllers here
         // magicSystemCheck();
         magicCheck();
         animationInitializer();
+        lightGridDimensions();
     };
 });
