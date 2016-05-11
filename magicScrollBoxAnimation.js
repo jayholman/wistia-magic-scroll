@@ -30,7 +30,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalVidContainer = document.getElementById(options.containingDivId);
 
     //Transformations for the variables
-
+    var numPopHeight = popoutHeight;
+    var numPopWidth = popoutWidth;
     //Function for converting to Pixel Strings
     var pixelConverter = function(size) {
         var number = size.toString();
@@ -206,6 +207,43 @@ Wistia.plugin("magic-scroll", function(video, options) {
         }
     };
 
+    //Animation Addition Function
+    var animationCreation = function(origLocX, origLocY) {
+        //Set up the Variables
+        var originalY = origLocY;
+        var originalX = origLocX;
+        var top = 0;
+        var left = 0;
+        var bottom = window.innerHeight - numPopHeight;
+        var right = window.innerWidth - numPopWidth;
+        var popoutTop = bottom;
+        var popoutLeft = right;
+        if (popoutLocation === 0) {
+          popoutTop = top;
+          popoutLeft = left;
+        } else if (popoutLocation === 1){
+          popoutLeft = left;
+        } else if (popoutLocation === 2){
+          popoutTop = top;
+        }
+
+        //Set up the style
+        var animatedNode = document.createElement("style");
+        animatedNode.setAttribute("id", "magic-scroll-plugin-animation-css");
+        head.appendChild(animatedNode);
+        var magicStyleTag = document.getElementById("magic-scroll-plugin-animation-css");
+
+        //Popout Animation
+        var popoutAnimationNode = document.createTextNode(".magicScrollPopoutAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingOut { 0% { top: " + originalY + "; left: " + originalX + "; height: " + locationDimension.height + "px; width: " + locationDimension.width + "px;}  100% { top: " + popoutTop + "; left: " + popoutLeft + "; height: " + popoutHeight + "; width: " + popoutWidth + ";} }");
+
+        //Original Animation
+        var originalAnimationNode = document.createTextNode(".magicScrollOriginalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingBack { 0% { top: " + popoutTop + "; left: " + popoutLeft + "; height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + locationDimension.height + "px; width: " + locationDimension.width + "px;} }");
+
+        magicStyleTag.appendChild(popoutAnimationNode);
+        magicStyleTag.appendChild(originalAnimationNode);
+    };
+
+animationCreation(1, 2);
     //Calculate User position within the light grid
     var lightGridDimensions = function() {
         //Video Addition Factor
