@@ -172,10 +172,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Function for setting up whether Video Container is visible
     var screenCheck = function() {
         //Dimensions for the video
-        var videoTop = locationDimension.top + (locationDimension.height * .6);
-        var videoBottom = locationDimension.bottom - (locationDimension.height * .6);
-        var videoLeft = locationDimension.left + (locationDimension.width * .6);
-        var videoRight = locationDimension.right - (locationDimension.width * .6);
+        var videoTop = locationDimension.top + (locationDimension.height);
+        var videoBottom = locationDimension.bottom - (locationDimension.height);
+        var videoLeft = locationDimension.left + (locationDimension.width);
+        var videoRight = locationDimension.right - (locationDimension.width);
         //Location of the top left of window
         var currentTop = window.scrollY;
         var currentBottom = currentTop + window.innerHeight;
@@ -326,6 +326,26 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     var animationInitializer = function() {
         console.log("Light Grid Location: " + location);
+    };
+
+    //Transitioners
+    var createAnimationDiv = function(origOrPop) {
+        var animationDiv = document.createElement("div");
+        animationDiv.setAttribute("id", "animationDiv");
+        animationDiv.setAttribute("class", origOrPop)
+        var parentDiv = originalVidContainer.parentElement;
+        parentDiv.insertBefore(animationDiv, originalVidContainer);
+    };
+
+    //Function to remove placeholder div
+    var destroyAnimationDiv = function() {
+        var animationDiv = document.getElementById("animationDiv");
+        var animationDiv = animationDiv.parentElement;
+        parentDiv.removeChild(animationDiv);
+    };
+    //Original Transitioner
+    var originalTransitioner = function() {
+
     };
 
     //Function for logging into the console to see if everything is working properly
