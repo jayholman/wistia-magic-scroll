@@ -203,13 +203,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     //Giant Animation Block
 
-    //Zeroing function
-    var zeroTheorem = function(theory) {
-        if (theory < 0) {
-            theory = 0;
-        }
-    };
-
     //Animation Addition Function
     var animationCreation = function(origLocX, origLocY) {
         //Set up the Variables
@@ -256,77 +249,48 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
 
     //Calculate User position within the light grid
-    var lightGridDimensions = function() {
-        //Video Addition Factor
-        var videoFactorY = (window.innerHeight - locationDimension.height);
-        var videoFactorX = (window.innerWidth - locationDimension.width);
-        //Create the extended lightGrid box around the original video
-        var topGrid = locationDimension.top;
-        var bottomGrid = locationDimension.bottom + videoFactorY;
-        var leftGrid = locationDimension.left - videoFactorX;
-        var rightGrid = locationDimension.right + videoFactorX;
-        //Current Location, may change to be the center of the box
-        var currentCenterTop = window.scrollY;
-        var currentCenterLeft = window.scrollX;
-        //lightGrid: Staying Positive
-        zeroTheorem(topGrid);
-        zeroTheorem(bottomGrid);
-        zeroTheorem(leftGrid);
-        zeroTheorem(rightGrid);
+    var animationInitializer = function() {
 
-        if (location != 1 && currentCenterTop < topGrid && currentCenterLeft < leftGrid) {
-            //Down to the right
+        //Current Scroll Top Location
+        var currentTop = window.scrollY;
+        //Top Line
+        var topLine = locationDimension.top - 50;
+        //Bottom Line
+        var bottomLine = locationDimension.bottom + 50;
+        //Inner Top Line
+        var innerTopLine = locationDimension.top + 10;
+        //Inner Bottom Line
+        var innerBottomLine = locationDimension.bottom - 10;
+
+        if (location != 1 && currentTop < topLine) {
+            //Downward Return Animation
             location = 1;
             destroyAnimation();
-            animationCreation(window.innerWidth, window.innerHeight);
+            animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight);
             return 1;
-        } else if (location != 2 && currentCenterTop < topGrid && currentCenterLeft >= leftGrid && currentCenterLeft <= rightGrid) {
-            //Straight down
+        } else if (location != 2 && currentTop > bottomLine) {
+            //Upward Return Animation
             location = 2;
             destroyAnimation();
-            animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight);
+            animationCreation((skynetLocator(originalVidContainer).left), (0 - locationDimension.height));
             return 2;
-        } else if (location != 3 && currentCenterTop < topGrid && currentCenterLeft > rightGrid) {
-            //Down to the left
+        } else if (location != 3 && currentTop > locationDimension.top && currentTop < innerTopLine) {
+            //Upper Popout Animation
             location = 3;
             destroyAnimation();
-            animationCreation((0 - locationDimension.width), window.innerHeight);
+            animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top));
             return 3;
-        } else if (location != 4 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft <= leftGrid) {
-            //Straight right
+        } else if (location != 4 && currentTop < locationDimension.bottom && currentTop > innerBottomLine) {
+            //Lower Popout Animation
             location = 4;
             destroyAnimation();
-            animationCreation(window.innerWidth, ((skynetLocator(originalVidContainer).top)));
+            animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top));
             return 4;
-        } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft > rightGrid) {
-            //Stright left
-            location = 5;
-            destroyAnimation();
-            animationCreation((0 - locationDimension.width), (skynetLocator(originalVidContainer).top));
-            return 5;
-        } else if (location != 6 && currentCenterTop > bottomGrid && currentCenterLeft < leftGrid) {
-            //Up to the Right
-            location = 6;
-            destroyAnimation();
-            animationCreation(window.innerWidth, (0 - locationDimension.top));
-            return 6;
-        } else if (location != 7 && currentCenterTop > bottomGrid && currentCenterLeft >= leftGrid && currentCenterLeft <= rightGrid) {
-            //Straight Up
-            location = 7;
-            destroyAnimation();
-            animationCreation(((skynetLocator(originalVidContainer).left)), (0 - locationDimension.top));
-            return 7;
-        } else if (location != 8 && currentCenterTop > bottomGrid && currentCenterLeft > rightGrid) {
-            //Up to the Left
-            location = 8;
-            destroyAnimation();
-            animationCreation((0 - locationDimension.width), (0 - locationDimension.height));
-            return 8;
         }
     };
 
-    var animationInitializer = function() {
-        console.log("Light Grid Location: " + location);
+    var animationCheck = function() {
+        console.log("Current Grid Location: " + location);
     };
 
     //Transitioners
@@ -428,14 +392,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
         // magicSystemCheck();
         magicCheck();
         animationInitializer();
-        lightGridDimensions();
+        animationCheck();
     };
     window.onresize = function() {
         //Probably should Add Animation Controllers here
         // magicSystemCheck();
         magicCheck();
         animationInitializer();
-        location = 0;
-        lightGridDimensions();
+        animationCheck();
     };
 });
