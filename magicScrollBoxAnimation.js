@@ -310,7 +310,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var animationDiv = document.createElement("div");
         animationDiv.setAttribute("id", "animationDiv");
         animationDiv.setAttribute("class", origOrPop);
-        animationDiv.setAttribute("style", "border: 2px solid dodgerblue;");
+        animationDiv.setAttribute("style", "border: 2px solid dodgerblue; z-index: 1001;");
         var body = document.getElementsByTagName("body")[0];
         body.appendChild(animationDiv);
         animationDivExists = true;
