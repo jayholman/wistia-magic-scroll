@@ -266,8 +266,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var leftGrid = locationDimension.left - videoFactorX;
         var rightGrid = locationDimension.right + videoFactorX;
         //Current Location, may change to be the center of the box
-        var currentCenterTop = window.scrollY + (window.innerHeight);
-        var currentCenterLeft = window.scrollX + (window.innerWidth);
+        var currentCenterTop = window.scrollY;
+        var currentCenterLeft = window.scrollX;
         //lightGrid: Staying Positive
         zeroTheorem(topGrid);
         zeroTheorem(bottomGrid);
@@ -284,43 +284,43 @@ Wistia.plugin("magic-scroll", function(video, options) {
             //Straight down
             location = 2;
             destroyAnimation();
-            animationCreation((window.innerWidth / 2), window.innerHeight);
+            animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight);
             return 2;
         } else if (location != 3 && currentCenterTop <= topGrid && currentCenterLeft >= rightGrid) {
             //Down to the left
             location = 3;
             destroyAnimation();
-            animationCreation(0, window.innerHeight);
+            animationCreation((0 - locationDimension.width), window.innerHeight);
             return 3;
         } else if (location != 4 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft <= leftGrid) {
             //Straight right
             location = 4;
             destroyAnimation();
-            animationCreation(window.innerWidth, (window.innerHeight / 2));
+            animationCreation(window.innerWidth, ((skynetLocator(originalVidContainer).top)));
             return 4;
         } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft >= rightGrid) {
             //Stright left
             location = 5;
             destroyAnimation();
-            animationCreation(0, (window.innerHeight / 2));
+            animationCreation((0 - locationDimension.width), (skynetLocator(originalVidContainer).top));
             return 5;
         } else if (location != 6 && currentCenterTop >= bottomGrid && currentCenterLeft <= leftGrid) {
             //Up to the Right
             location = 6;
             destroyAnimation();
-            animationCreation(window.innerWidth, 0);
+            animationCreation(window.innerWidth, (0 - locationDimension.top));
             return 6;
         } else if (location != 7 && currentCenterTop >= bottomGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
             //Straight Up
             location = 7;
             destroyAnimation();
-            animationCreation((window.innerWidth / 2), 0);
+            animationCreation(((skynetLocator(originalVidContainer).left)), (0 - locationDimension.top));
             return 7;
         } else if (location != 8 && currentCenterTop >= bottomGrid && currentCenterLeft >= rightGrid) {
             //Up to the Left
             location = 8;
             destroyAnimation();
-            animationCreation(0, 0);
+            animationCreation((0 - locationDimension.width), (0 - locationDimension.height));
             return 8;
         }
     };
@@ -342,10 +342,12 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     //Function to remove placeholder div
     var destroyAnimationDiv = function() {
+      if (animationDivExists){
         var animationDiv = document.getElementById("animationDiv");
         var parentDiv = animationDiv.parentElement;
         parentDiv.removeChild(animationDiv);
         animationDivExists = false;
+      }
     };
     //Original Transitioner
     var originalTransitioner = function() {
