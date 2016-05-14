@@ -332,20 +332,42 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var createAnimationDiv = function(origOrPop) {
         var animationDiv = document.createElement("div");
         animationDiv.setAttribute("id", "animationDiv");
-        animationDiv.setAttribute("class", origOrPop)
-        var parentDiv = originalVidContainer.parentElement;
-        parentDiv.insertBefore(animationDiv, originalVidContainer);
+        animationDiv.setAttribute("class", origOrPop);
+        animationDiv.setAttribute("style", "border: 2px solid dodgerblue;");
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(animationDiv);
     };
 
     //Function to remove placeholder div
     var destroyAnimationDiv = function() {
         var animationDiv = document.getElementById("animationDiv");
-        var animationDiv = animationDiv.parentElement;
+        var parentDiv = animationDiv.parentElement;
         parentDiv.removeChild(animationDiv);
     };
     //Original Transitioner
     var originalTransitioner = function() {
+        createAnimationDiv("magicScrollPopoutAnimation");
+        //timeout
+        setTimeout(function() {
+            //move the video after x timeout
+            setVideoClass("popoutSize");
+            poppedOut = true;
+            //delete the animationDiv
+            destroyAnimationDiv();
+        }, 750);
+    };
 
+    //Popout Transitioner
+    var popoutTransitioner = function() {
+        createAnimationDiv("magicScrollOriginalAnimation");
+        //timeout
+        setTimeout(function() {
+            //move the video after x timeout
+            setVideoClass("originalSize");
+            poppedOut = false;
+            //delete the animationDiv
+            destroyAnimationDiv();
+        }, 750);
     };
 
     //Function for logging into the console to see if everything is working properly
@@ -361,21 +383,34 @@ Wistia.plugin("magic-scroll", function(video, options) {
         console.log("The original video zone is visible: " + screenCheck());
         if (!screenCheck() && video.state() === "playing" && screenLargeEnough()) {
             //Set Size for permanent-ish Popout Position div
-            setVideoClass("popoutSize");
-            poppedOut = true;
+            if (!poppedOut) {
+                originalTransitioner();
+            } else {
+                setVideoClass("popoutSize");
+                poppedOut = true;
+            }
         } else if (!screenCheck() && poppedOut && video.state() === "paused" && screenLargeEnough()) {
             //Don't disappear if the video is paused
             setVideoClass("popoutSize");
             poppedOut = true;
         } else if (!screenLargeEnough() && !screenCheck()) {
             //Set Size for permanent-ish Original Position div
-            setVideoClass("originalSize");
-            poppedOut = false;
-            video.pause();
+            if (poppedOut) {
+                popoutTransitioner();
+                video.pause();
+            } else {
+                setVideoClass("originalSize");
+                poppedOut = false;
+                video.pause();
+            }
         } else {
             //Set Size for permanent-ish Original Position div
-            setVideoClass("originalSize");
-            poppedOut = false;
+            if (poppedOut) {
+                popoutTransitioner();
+            } else {
+                setVideoClass("originalSize");
+                poppedOut = false;
+            }
         }
     };
 
