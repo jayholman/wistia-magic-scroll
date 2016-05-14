@@ -258,10 +258,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Calculate User position within the light grid
     var lightGridDimensions = function() {
         //Video Addition Factor
-        var videoFactorY = (window.innerHeight - locationDimension.height) / 2;
-        var videoFactorX = (window.innerWidth - locationDimension.width) / 2;
+        var videoFactorY = (window.innerHeight - locationDimension.height);
+        var videoFactorX = (window.innerWidth - locationDimension.width);
         //Create the extended lightGrid box around the original video
-        var topGrid = locationDimension.top - videoFactorY;
+        var topGrid = locationDimension.top;
         var bottomGrid = locationDimension.bottom + videoFactorY;
         var leftGrid = locationDimension.left - videoFactorX;
         var rightGrid = locationDimension.right + videoFactorX;
@@ -274,19 +274,19 @@ Wistia.plugin("magic-scroll", function(video, options) {
         zeroTheorem(leftGrid);
         zeroTheorem(rightGrid);
 
-        if (location != 1 && currentCenterTop <= topGrid && currentCenterLeft <= leftGrid) {
+        if (location != 1 && currentCenterTop < topGrid && currentCenterLeft < leftGrid) {
             //Down to the right
             location = 1;
             destroyAnimation();
             animationCreation(window.innerWidth, window.innerHeight);
             return 1;
-        } else if (location != 2 && currentCenterTop <= topGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
+        } else if (location != 2 && currentCenterTop < topGrid && currentCenterLeft >= leftGrid && currentCenterLeft <= rightGrid) {
             //Straight down
             location = 2;
             destroyAnimation();
             animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight);
             return 2;
-        } else if (location != 3 && currentCenterTop <= topGrid && currentCenterLeft >= rightGrid) {
+        } else if (location != 3 && currentCenterTop < topGrid && currentCenterLeft > rightGrid) {
             //Down to the left
             location = 3;
             destroyAnimation();
@@ -298,25 +298,25 @@ Wistia.plugin("magic-scroll", function(video, options) {
             destroyAnimation();
             animationCreation(window.innerWidth, ((skynetLocator(originalVidContainer).top)));
             return 4;
-        } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft >= rightGrid) {
+        } else if (location != 5 && currentCenterTop > topGrid && currentCenterTop < bottomGrid && currentCenterLeft > rightGrid) {
             //Stright left
             location = 5;
             destroyAnimation();
             animationCreation((0 - locationDimension.width), (skynetLocator(originalVidContainer).top));
             return 5;
-        } else if (location != 6 && currentCenterTop >= bottomGrid && currentCenterLeft <= leftGrid) {
+        } else if (location != 6 && currentCenterTop > bottomGrid && currentCenterLeft < leftGrid) {
             //Up to the Right
             location = 6;
             destroyAnimation();
             animationCreation(window.innerWidth, (0 - locationDimension.top));
             return 6;
-        } else if (location != 7 && currentCenterTop >= bottomGrid && currentCenterLeft > leftGrid && currentCenterLeft < rightGrid) {
+        } else if (location != 7 && currentCenterTop > bottomGrid && currentCenterLeft >= leftGrid && currentCenterLeft <= rightGrid) {
             //Straight Up
             location = 7;
             destroyAnimation();
             animationCreation(((skynetLocator(originalVidContainer).left)), (0 - locationDimension.top));
             return 7;
-        } else if (location != 8 && currentCenterTop >= bottomGrid && currentCenterLeft >= rightGrid) {
+        } else if (location != 8 && currentCenterTop > bottomGrid && currentCenterLeft > rightGrid) {
             //Up to the Left
             location = 8;
             destroyAnimation();
@@ -435,6 +435,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         // magicSystemCheck();
         magicCheck();
         animationInitializer();
+        location = 0;
         lightGridDimensions();
     };
 });
