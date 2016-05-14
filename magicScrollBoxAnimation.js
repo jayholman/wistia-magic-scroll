@@ -32,6 +32,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Animation Information
     var numPopHeight = popoutHeight;
     var numPopWidth = popoutWidth;
+    var animationDivExists = false;
     //Grid Number
     var location = 1;
     //Function for converting to Pixel Strings
@@ -336,6 +337,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         animationDiv.setAttribute("style", "border: 2px solid dodgerblue;");
         var body = document.getElementsByTagName("body")[0];
         body.appendChild(animationDiv);
+        animationDivExists = true;
     };
 
     //Function to remove placeholder div
@@ -343,10 +345,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var animationDiv = document.getElementById("animationDiv");
         var parentDiv = animationDiv.parentElement;
         parentDiv.removeChild(animationDiv);
+        animationDivExists = false;
     };
     //Original Transitioner
     var originalTransitioner = function() {
-        createAnimationDiv("magicScrollPopoutAnimation");
+        if (!animationDivExists) {
+            createAnimationDiv("magicScrollPopoutAnimation");
+        }
         //timeout
         setTimeout(function() {
             //move the video after x timeout
@@ -359,7 +364,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     //Popout Transitioner
     var popoutTransitioner = function() {
-        createAnimationDiv("magicScrollOriginalAnimation");
+        if (!animationDivExists) {
+            createAnimationDiv("magicScrollOriginalAnimation");
+        }
         //timeout
         setTimeout(function() {
             //move the video after x timeout
