@@ -266,8 +266,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
         var leftGrid = locationDimension.left - videoFactorX;
         var rightGrid = locationDimension.right + videoFactorX;
         //Current Location, may change to be the center of the box
-        var currentCenterTop = window.scrollY + (window.innerHeight / 2);
-        var currentCenterLeft = window.scrollX + (window.innerWidth / 2);
+        var currentCenterTop = window.scrollY + (window.innerHeight);
+        var currentCenterLeft = window.scrollX + (window.innerWidth);
         //lightGrid: Staying Positive
         zeroTheorem(topGrid);
         zeroTheorem(bottomGrid);
