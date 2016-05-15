@@ -11,7 +11,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // popoutOffsetX: Integer
     // popoutOffsetY: Integer
     // responsive: Boolean
-    // transitionSpeed: Decimal 0-1;
+    // transitionSpeed: Decimal that equates to Percentage of Video Height;
 
     //Early Defined Variables
     var aspectRatio = video.aspect();
