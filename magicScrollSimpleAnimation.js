@@ -35,8 +35,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalVidContainer = document.getElementById(options.containingDivId);
 
     //Do we want to alter transitionSpeed
-    if (options.transitionSpeed){
-      transitionSpeed = options.transitionSpeed;
+    if (options.transitionSpeed) {
+        transitionSpeed = options.transitionSpeed;
     }
 
     //Function for converting to Pixel Strings
@@ -90,30 +90,30 @@ Wistia.plugin("magic-scroll", function(video, options) {
     popoutHeight = pixelConverter(popoutHeight);
     popoutWidth = pixelConverter(popoutWidth);
     //Determine if offset is needed
-    if (options.popoutOffsetY){
-      popoutOffsetY = options.popoutOffsetY;
+    if (options.popoutOffsetY) {
+        popoutOffsetY = options.popoutOffsetY;
     }
-    if (options.popoutOffsetX){
-      popoutOffsetX = options.popoutOffsetX;
+    if (options.popoutOffsetX) {
+        popoutOffsetX = options.popoutOffsetX;
     }
 
     //Popout Locations Calculations
     if (options.popoutLocation === "topLeft") {
         popoutLocation = 0;
-        popoutLocationY = "top: "+ popoutOffsetY +";";
-        popoutLocationX = "left: "+ popoutOffsetX +";";
+        popoutLocationY = "top: " + popoutOffsetY + ";";
+        popoutLocationX = "left: " + popoutOffsetX + ";";
     } else if (options.popoutLocation === "bottomLeft") {
         popoutLocation = 1;
-        popoutLocationY = "bottom: "+ popoutOffsetY +";";
-        popoutLocationX = "left: "+ popoutOffsetX +";";
+        popoutLocationY = "bottom: " + popoutOffsetY + ";";
+        popoutLocationX = "left: " + popoutOffsetX + ";";
     } else if (options.popoutLocation === "topRight") {
         popoutLocation = 2;
-        popoutLocationY = "top: "+ popoutOffsetY +";";
-        popoutLocationX = "right: "+ popoutOffsetX +";";
+        popoutLocationY = "top: " + popoutOffsetY + ";";
+        popoutLocationX = "right: " + popoutOffsetX + ";";
     } else {
         popoutLocation = 3;
-        popoutLocationY = "bottom: "+ popoutOffsetY +";";
-        popoutLocationX = "right: "+ popoutOffsetX +";";
+        popoutLocationY = "bottom: " + popoutOffsetY + ";";
+        popoutLocationX = "right: " + popoutOffsetX + ";";
     }
 
     //Determine class sizes for the two video container states
@@ -122,9 +122,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutSize = '.popoutSize { ' + 'height: ' + popoutHeight + '; width: ' + popoutWidth + '; position: fixed; z-index: 1000; ' + popoutLocationY + ' ' + popoutLocationX + ' border: 2px solid dodgerblue;}';
 
     //Create Animation Styles
-    var createPopoutAnimation = ".popoutCreationAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes poppingOut { 0% {height: 0px; width: 0px;}  100% { height: " + popoutHeight + "; width: " + popoutWidth + ";} }";
+    var createPopoutAnimation = ".popoutCreationAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes poppingOut { 0% {height: 0px; width: 0px;}  100% { height: " + popoutHeight + "; width: " + popoutWidth + ";} }";
 
-    var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes poppingOut { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
+    var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: .75s; animation-name: revertingToOriginal; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes revertingToOriginal { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
 
     //Create CSS styling for the two Classes in the head of the document
     var head = document.getElementsByTagName('head')[0];
@@ -142,6 +142,34 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Set the orignal video state class on the video
     setVideoClass("originalSize");
 
+    //Animation Transitioner Functions
+    var originalToPopoutTransitioner = function() {
+        if (!poppedOut) {
+            setVideoClass("popoutCreationAnimation");
+                //timeout
+            setTimeout(function() {
+                //move the video after x timeout
+                setVideoClass("popoutSize");
+                poppedOut = true;
+            }, 750);
+        } else {
+            setVideoClass("popoutSize");
+        }
+    };
+
+    var popoutToOriginalTransitioner = function() {
+        if (poppedOut) {
+            setVideoClass("popoutDestructionAnimation")
+                //timeout
+            setTimeout(function() {
+                //move the video after x timeout
+                setVideoClass("originalSize");
+                poppedOut = false;
+            }, 750);
+        } else {
+          setVideoClass("originalSize");
+        }
+    };
     //Function to create placeholder div
     var createPlaceholder = function() {
         var placeHolder = document.createElement("div");
@@ -234,21 +262,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
         console.log("The original video zone is visible: " + screenCheck());
         if (!screenCheck() && video.state() === "playing" && screenLargeEnough()) {
             //Set Size for permanent-ish Popout Position div
-            setVideoClass("popoutSize");
-            poppedOut = true;
+            originalToPopoutTransitioner();
         } else if (!screenCheck() && poppedOut && video.state() === "paused" && screenLargeEnough()) {
             //Don't disappear if the video is paused
             setVideoClass("popoutSize");
             poppedOut = true;
         } else if (!screenLargeEnough() && !screenCheck()) {
             //Set Size for permanent-ish Original Position div
-            setVideoClass("originalSize");
-            poppedOut = false;
+            popoutToOriginalTransitioner();
             video.pause();
         } else {
             //Set Size for permanent-ish Original Position div
-            setVideoClass("originalSize");
-            poppedOut = false;
+            popoutToOriginalTransitioner();
         }
     };
 
