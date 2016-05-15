@@ -7,6 +7,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // popoutHeight: Integer
     // popoutWidth: Integer
     // popoutLocation: String
+    // popoutOffsetX: Integer
+    // popoutOffsetY: Integer
     // responsive: Boolean
     // src: "/experiments/magicScrollPlugin.js" - required
 
@@ -19,11 +21,11 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutHeight = 224;
     var popoutWidth = 400;
     var popoutLocation = 3;
-    var popoutLocationY = 'bottom: 0;';
-    var popoutLocationX = 'right: 0;'
+    var popoutOffsetX = 0;
+    var popoutOffsetY = 0;
     var screenSizePopoutHeight = popoutHeight;
     var screenSizePopoutWidth = popoutWidth;
-        //What exists and doesn't exist
+    //What exists and doesn't exist
     var poppedOut = false;
     var placeHolderExists = false;
     //How to grab the video container
@@ -81,20 +83,31 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     popoutHeight = pixelConverter(popoutHeight);
     popoutWidth = pixelConverter(popoutWidth);
+    //Determine if offset is needed
+    if (options.popoutOffsetY){
+      popoutOffsetY = options.popoutOffsetY;
+    }
+    if (options.popoutOffsetX){
+      popoutOffsetX = options.popoutOffsetX;
+    }
 
     //Popout Locations Calculations
     if (options.popoutLocation === "topLeft") {
         popoutLocation = 0;
-        popoutLocationY = "top: 0;"
-        popoutLocationX = "left: 0;"
+        popoutLocationY = "top: "+ popoutOffsetY +";";
+        popoutLocationX = "left: "+ popoutOffsetX +";";
     } else if (options.popoutLocation === "bottomLeft") {
         popoutLocation = 1;
-        popoutLocationY = "bottom: 0;"
-        popoutLocationX = "left: 0;"
+        popoutLocationY = "bottom: "+ popoutOffsetY +";";
+        popoutLocationX = "left: "+ popoutOffsetX +";";
     } else if (options.popoutLocation === "topRight") {
         popoutLocation = 2;
-        popoutLocationY = "top: 0;"
-        popoutLocationX = "right: 0;"
+        popoutLocationY = "top: "+ popoutOffsetY +";";
+        popoutLocationX = "right: "+ popoutOffsetX +";";
+    } else {
+        popoutLocation = 3;
+        popoutLocationY = "bottom: "+ popoutOffsetY +";";
+        popoutLocationX = "right: "+ popoutOffsetX +";";
     }
 
     //Determine class sizes for the two video container states
