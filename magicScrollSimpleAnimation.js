@@ -2,7 +2,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Current options Available to Change:
     // video hashed_id -required
     // containingDivId: String - required
-    // animationWrapperId: String - required
     // src: "/experiments/magicScrollPlugin.js" - required
     // originalHeight: Integer
     // originalWidth: Integer
@@ -32,9 +31,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //What exists and doesn't exist
     var poppedOut = false;
     var placeHolderExists = false;
+
+
+    //Create animationWrapper at top of the body
+    var animationDiv = document.createElement("div");
+    animationDiv.setAttribute("id", "animationWrapper");
+    var body = document.getElementsByTagName("body")[0];
+    body.insertBefore(animationDiv, body.firstChild);
+
     //How to grab the video container and the animation wrapper
     var originalVidContainer = document.getElementById(options.containingDivId);
-    var animationWrapper = document.getElementById(options.animationWrapperId);
+    var animationWrapper =
+        document.getElementById("animationWrapper");
 
     //Do we want to alter transitionSpeed
     if (options.transitionSpeed) {
@@ -144,15 +152,35 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Set the orignal video state class on the video
     setVideoClass("originalSize", originalVidContainer);
 
+    //Moving Video Function
+    var newParent = function(alfred) {
+        alfred.appendChild(originalVidContainer)
+    };
+
+    //Function to create placeholder div
+    var createPlaceholder = function() {
+        if (!placeHolderExists) {
+            var placeHolder = document.createElement("div");
+            placeHolder.setAttribute("id", "sweetPlaceHolder");
+            placeHolder.setAttribute("class", "originalSize")
+            var parentDiv = originalVidContainer.parentElement;
+            parentDiv.insertBefore(placeHolder, originalVidContainer);
+            placeHolderExists = true;
+        }
+    };
+
     //Animation Transitioner Functions
     var originalToPopoutTransitioner = function() {
+        createPlaceholder();
         if (!poppedOut) {
-            setVideoClass("popoutCreationAnimation", originalVidContainer);
-            setVideoClass("popoutSize", animationWrapper);
+            setVideoClass("popoutCreationAnimation", animationWrapper);
+            newParent(animationWrapper);
+            setVideoClass("popoutSize", originalVidContainer);
             //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("popoutSize", originalVidContainer);
+                setVideoClass("popoutSize", animationWrapper);
+                video.play();
                 poppedOut = true;
             }, 750);
         } else {
@@ -161,35 +189,23 @@ Wistia.plugin("magic-scroll", function(video, options) {
     };
 
     var popoutToOriginalTransitioner = function() {
+        //How to grab the Placeholder
+        var placeHolderContainer = document.getElementById("sweetPlaceHolder");
+
         if (poppedOut) {
-            setVideoClass("popoutDestructionAnimation", originalVidContainer);
-                //timeout
+            setVideoClass("popoutDestructionAnimation", animationWrapper);
+
+            //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("originalSize", animationWrapper);
+                newParent(placeHolderContainer);
                 setVideoClass("originalSize", originalVidContainer);
                 poppedOut = false;
+                video.play();
             }, 750);
         } else {
             setVideoClass("originalSize", originalVidContainer);
         }
-    };
-    //Function to create placeholder div
-    var createPlaceholder = function() {
-        var placeHolder = document.createElement("div");
-        placeHolder.setAttribute("id", "sweetPlaceHolder");
-        placeHolder.setAttribute("class", "originalSize")
-        var parentDiv = originalVidContainer.parentElement;
-        parentDiv.insertBefore(placeHolder, originalVidContainer);
-        placeHolderExists = true;
-    };
-
-    //Function to remove placeholder div
-    var destroyPlaceholder = function() {
-        var placeHolder = document.getElementById("sweetPlaceHolder");
-        var parentDiv = placeHolder.parentElement;
-        parentDiv.removeChild(placeHolder);
-        placeHolderExists = false;
     };
 
     //Create the Locator Function for the Original Video on the page
