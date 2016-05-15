@@ -129,13 +129,15 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: .75s; animation-name: revertingToOriginal; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes revertingToOriginal { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
 
-    var createOriginalAnimation = ".originalReconstructionAnimation { animation-duration: .75s; animation-name: reconstruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes reconstruction { 0% {height: 0px; width: 0px;}  100% { height: " + originalHeight + "; width: " + originalWidth + ";} }";
+    var recreateOriginalAnimation = ".originalReconstructionAnimation { animation-duration: .75s; animation-name: reconstruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes reconstruction { 0% {height: 0px; width: 0px;}  100% { height: " + originalHeight + "; width: " + originalWidth + ";} }";
+
+    var destroyOriginalAnimation = ".originalDestructionAnimation { animation-duration: .75s; animation-name: destruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes destruction { 0% { height: " + originalHeight + "; width: " + originalWidth + ";} 100% {height: 0px; width: 0px;}}";
 
     //Create CSS styling for the two Classes in the head of the document
     var head = document.getElementsByTagName('head')[0];
     var styleNode = document.createElement("style");
     styleNode.setAttribute("id", "magicScrollPluginCss");
-    var magicStyles = document.createTextNode(originalSize + popoutSize + createPopoutAnimation + destroyPopoutAnimation + createOriginalAnimation);
+    var magicStyles = document.createTextNode(originalSize + popoutSize + createPopoutAnimation + destroyPopoutAnimation + recreateOriginalAnimation + destroyOriginalAnimation);
     styleNode.appendChild(magicStyles);
     head.appendChild(styleNode);
 
@@ -153,13 +155,16 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Animation Transitioner Functions
     var originalToPopoutTransitioner = function() {
         if (!poppedOut) {
-            setVideoClass("popoutCreationAnimation", animationWrapper);
-            setVideoClass("popoutSize", originalVidContainer);
-            //timeout
+            setVideoClass("originalDestructionAnimation", animationWrapper);
+            //timeouts
             setTimeout(function() {
-                //move the video after x timeout
-                setVideoClass("popoutSize", animationWrapper);
+                setVideoClass("popoutCreationAnimation", animationWrapper);
+                setVideoClass("popoutSize", originalVidContainer);
                 poppedOut = true;
+                setTimeout(function() {
+                    //move the video after x timeout
+                    setVideoClass("popoutSize", animationWrapper);
+                }, 750);
             }, 750);
         } else {
             setVideoClass("popoutSize", originalVidContainer);
@@ -169,14 +174,14 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutToOriginalTransitioner = function() {
         if (poppedOut) {
             setVideoClass("popoutDestructionAnimation", animationWrapper);
-                //timeout
+            //timeouts
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("originalReconstructionAnimation", animationWrapper);
                 setVideoClass("originalSize", originalVidContainer);
+                setVideoClass("originalReconstructionAnimation", animationWrapper);
                 poppedOut = false;
-                setTimeout(function(){
-                  setVideoClass("originalSize", animationWrapper);
+                setTimeout(function() {
+                    setVideoClass("originalSize", animationWrapper);
                 }, 750);
             }, 750);
         } else {
