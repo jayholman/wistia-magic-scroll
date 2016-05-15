@@ -2,6 +2,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Current options Available to Change:
     // video hashed_id -required
     // containingDivId: String - required
+    // src: "/experiments/magicScrollPlugin.js" - required
     // originalHeight: Integer
     // originalWidth: Integer
     // popoutHeight: Integer
@@ -10,7 +11,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // popoutOffsetX: Integer
     // popoutOffsetY: Integer
     // responsive: Boolean
-    // src: "/experiments/magicScrollPlugin.js" - required
+    // transitionSpeed: Decimal 0-1;
 
     //Early Defined Variables
     var aspectRatio = video.aspect();
@@ -25,13 +26,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutOffsetY = 0;
     var screenSizePopoutHeight = popoutHeight;
     var screenSizePopoutWidth = popoutWidth;
+    //When does the video shift
+    var transitionSpeed = 1;
     //What exists and doesn't exist
     var poppedOut = false;
     var placeHolderExists = false;
     //How to grab the video container
     var originalVidContainer = document.getElementById(options.containingDivId);
 
-    //Transformations for the variables
+    //Do we want to alter transitionSpeed
+    if (options.transitionSpeed){
+      transitionSpeed = options.transitionSpeed;
+    }
 
     //Function for converting to Pixel Strings
     var pixelConverter = function(size) {
@@ -182,10 +188,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Function for setting up whether Video Container is visible
     var screenCheck = function() {
         //Dimensions for the video
-        var videoTop = locationDimension.top + (locationDimension.height * .6);
-        var videoBottom = locationDimension.bottom - (locationDimension.height * .6);
-        var videoLeft = locationDimension.left + (locationDimension.width * .6);
-        var videoRight = locationDimension.right - (locationDimension.width * .6);
+        var videoTop = locationDimension.top + (locationDimension.height * transitionSpeed);
+        var videoBottom = locationDimension.bottom - (locationDimension.height * transitionSpeed);
+        var videoLeft = locationDimension.left + (locationDimension.width * transitionSpeed);
+        var videoRight = locationDimension.right - (locationDimension.width * transitionSpeed);
         //Location of the top left of window
         var currentTop = window.scrollY;
         var currentBottom = currentTop + window.innerHeight;
