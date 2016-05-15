@@ -3,6 +3,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // video hashed_id -required
     // containingDivId: String - required
     // animationWrapperId: String - required
+    // placeHolderDivId: String -required
     // src: "/experiments/magicScrollPlugin.js" - required
     // originalHeight: Integer
     // originalWidth: Integer
@@ -31,10 +32,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var transitionSpeed = 1;
     //What exists and doesn't exist
     var poppedOut = false;
-    var placeHolderExists = false;
     //How to grab the video container and the animation wrapper
     var originalVidContainer = document.getElementById(options.containingDivId);
     var animationWrapper = document.getElementById(options.animationWrapperId);
+    var placeHolder = document.getElementById(options.placeHolderId);
 
     //Do we want to alter transitionSpeed
     if (options.transitionSpeed) {
@@ -128,11 +129,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: .75s; animation-name: revertingToOriginal; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes revertingToOriginal { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
 
+    var createOriginalAnimation = ".originalReconstructionAnimation { animation-duration: .75s; animation-name: reconstruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes reconstruction { 0% {height: 0px; width: 0px;}  100% { height: " + originalHeight + "; width: " + originalWidth + ";} }";
+
     //Create CSS styling for the two Classes in the head of the document
     var head = document.getElementsByTagName('head')[0];
     var styleNode = document.createElement("style");
     styleNode.setAttribute("id", "magicScrollPluginCss");
-    var magicStyles = document.createTextNode(originalSize + popoutSize + createPopoutAnimation + destroyPopoutAnimation);
+    var magicStyles = document.createTextNode(originalSize + popoutSize + createPopoutAnimation + destroyPopoutAnimation + createOriginalAnimation);
     styleNode.appendChild(magicStyles);
     head.appendChild(styleNode);
 
@@ -144,15 +147,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Set the orignal video state class on the video
     setVideoClass("originalSize", originalVidContainer);
 
+    //Set the orignal video state class on the placeholder
+    setVideoClass("originalSize", placeHolder);
+
     //Animation Transitioner Functions
     var originalToPopoutTransitioner = function() {
         if (!poppedOut) {
-            setVideoClass("popoutCreationAnimation", originalVidContainer);
-            setVideoClass("popoutSize", animationWrapper);
+            setVideoClass("popoutCreationAnimation", animationWrapper);
+            setVideoClass("popoutSize", originalVidContainer);
             //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("popoutSize", originalVidContainer);
+                setVideoClass("popoutSize", animationWrapper);
                 poppedOut = true;
             }, 750);
         } else {
@@ -162,34 +168,20 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     var popoutToOriginalTransitioner = function() {
         if (poppedOut) {
-            setVideoClass("popoutDestructionAnimation", originalVidContainer);
+            setVideoClass("popoutDestructionAnimation", animationWrapper);
                 //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("originalSize", animationWrapper);
+                setVideoClass("originalReconstructionAnimation", animationWrapper);
                 setVideoClass("originalSize", originalVidContainer);
                 poppedOut = false;
+                setTimeout(function(){
+                  setVideoClass("originalSize", animationWrapper);
+                }, 750);
             }, 750);
         } else {
             setVideoClass("originalSize", originalVidContainer);
         }
-    };
-    //Function to create placeholder div
-    var createPlaceholder = function() {
-        var placeHolder = document.createElement("div");
-        placeHolder.setAttribute("id", "sweetPlaceHolder");
-        placeHolder.setAttribute("class", "originalSize")
-        var parentDiv = originalVidContainer.parentElement;
-        parentDiv.insertBefore(placeHolder, originalVidContainer);
-        placeHolderExists = true;
-    };
-
-    //Function to remove placeholder div
-    var destroyPlaceholder = function() {
-        var placeHolder = document.getElementById("sweetPlaceHolder");
-        var parentDiv = placeHolder.parentElement;
-        parentDiv.removeChild(placeHolder);
-        placeHolderExists = false;
     };
 
     //Create the Locator Function for the Original Video on the page
@@ -258,7 +250,6 @@ Wistia.plugin("magic-scroll", function(video, options) {
         console.log(locationDimension);
         console.log("Is the video visible: " + screenCheck());
         console.log("Is the screen large enough: " + screenLargeEnough());
-        console.log("Placeholder Exists: " + placeHolderExists);
     };
 
     //Function for determining if viewer has scrolled past a certain point
