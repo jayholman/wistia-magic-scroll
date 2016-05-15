@@ -254,9 +254,11 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Function to remove placeholder div
     var destroyAnimation = function(animationNode) {
         var animationStyle = document.getElementById(animationNode);
-        if (animationStyle) {
-            var parentDiv = animationStyle.parentElement;
-            parentDiv.removeChild(animationStyle);
+        if (animationstyle) {
+            while (animationStyle) {
+                var parentDiv = animationStyle.parentElement;
+                parentDiv.removeChild(animationStyle);
+            }
         }
     };
 
@@ -277,25 +279,25 @@ Wistia.plugin("magic-scroll", function(video, options) {
         if (location != 1 && currentTop < topLine) {
             //Downward Return Animation
             location = 1;
-            destroyAnimation(originalAnimationCss);
+            destroyAnimation("originalAnimationCss");
             animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight, "original");
             return 1;
         } else if (location != 2 && currentTop > bottomLine) {
             //Upward Return Animation
             location = 2;
-            destroyAnimation(originalAnimationCss);
+            destroyAnimation("originalAnimationCss");
             animationCreation((skynetLocator(originalVidContainer).left), (0 - locationDimension.height), "original");
             return 2;
         } else if (location != 3 && currentTop > locationDimension.top && currentTop < innerTopLine) {
             //Upper Popout Animation
             location = 3;
-            destroyAnimation(popoutAnimationCss);
+            destroyAnimation("popoutAnimationCss");
             animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top), "popout");
             return 3;
         } else if (location != 4 && currentTop < locationDimension.bottom && currentTop > innerBottomLine) {
             //Lower Popout Animation
             location = 4;
-            destroyAnimation(popoutAnimationCss);
+            destroyAnimation("popoutAnimationCss");
             animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top), "popout");
             return 4;
         }
@@ -312,7 +314,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
         animationDiv.setAttribute("class", origOrPop);
         animationDiv.setAttribute("style", "border: 2px solid dodgerblue; z-index: 1001;");
         var body = document.getElementsByTagName("body")[0];
-        body.appendChild(animationDiv);
+        body.insertBefore(animationDiv, body.firstChild);
         animationDivExists = true;
     };
 
