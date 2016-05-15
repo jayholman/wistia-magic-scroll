@@ -148,6 +148,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var originalToPopoutTransitioner = function() {
         if (!poppedOut) {
             setVideoClass("popoutCreationAnimation", originalVidContainer);
+            setVideoClass("popoutSize", animationWrapper);
             //timeout
             setTimeout(function() {
                 //move the video after x timeout
@@ -161,10 +162,11 @@ Wistia.plugin("magic-scroll", function(video, options) {
 
     var popoutToOriginalTransitioner = function() {
         if (poppedOut) {
-            setVideoClass("popoutDestructionAnimation", originalVidContainer)
+            setVideoClass("popoutDestructionAnimation", originalVidContainer);
                 //timeout
             setTimeout(function() {
                 //move the video after x timeout
+                setVideoClass("originalSize", animationWrapper);
                 setVideoClass("originalSize", originalVidContainer);
                 poppedOut = false;
             }, 750);
