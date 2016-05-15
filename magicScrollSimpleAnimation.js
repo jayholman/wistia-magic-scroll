@@ -13,7 +13,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     // popoutOffsetX: Integer
     // popoutOffsetY: Integer
     // responsive: Boolean
-    // transitionSpeed: Decimal that equates to Percentage of Video Height;
+    // percentVideoPassed: Decimal that equates to Percentage of Video Height;
+    //animationSpeed: Decimal of the Seconds
 
     //Early Defined Variables
     var aspectRatio = video.aspect();
@@ -29,7 +30,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var screenSizePopoutHeight = popoutHeight;
     var screenSizePopoutWidth = popoutWidth;
     //When does the video shift
-    var transitionSpeed = 1;
+    var percentVideoPassed = 1;
+    var animationSpeed = 1;
     //What exists and doesn't exist
     var poppedOut = false;
     //How to grab the video container and the animation wrapper
@@ -37,9 +39,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var animationWrapper = document.getElementById(options.animationWrapperId);
     var placeHolder = document.getElementById(options.placeHolderId);
 
-    //Do we want to alter transitionSpeed
-    if (options.transitionSpeed) {
-        transitionSpeed = options.transitionSpeed;
+    //Do we want to alter percentVideoPassed and animationSpeed
+    if (options.percentVideoPassed) {
+        percentVideoPassed = options.percentVideoPassed;
+    }
+    if (options.animationSpeed) {
+      //Divide animationSpeed by 2 if it's selected
+        animationSpeed = options.animationSpeed / 2;
     }
 
     //Function for converting to Pixel Strings
@@ -125,13 +131,13 @@ Wistia.plugin("magic-scroll", function(video, options) {
     var popoutSize = '.popoutSize { ' + 'height: ' + popoutHeight + '; width: ' + popoutWidth + '; position: fixed; z-index: 1000; ' + popoutLocationY + ' ' + popoutLocationX + ' border: 2px solid dodgerblue;}';
 
     //Create Animation Styles
-    var createPopoutAnimation = ".popoutCreationAnimation { animation-duration: .75s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes poppingOut { 0% {height: 0px; width: 0px;}  100% { height: " + popoutHeight + "; width: " + popoutWidth + ";} }";
+    var createPopoutAnimation = ".popoutCreationAnimation { animation-duration: " + animationSpeed + "s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes poppingOut { 0% {height: 0px; width: 0px;}  100% { height: " + popoutHeight + "; width: " + popoutWidth + ";} }";
 
-    var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: .75s; animation-name: revertingToOriginal; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes revertingToOriginal { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
+    var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: " + animationSpeed + "s; animation-name: revertingToOriginal; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;" + popoutLocationX + popoutLocationY + "} @keyframes revertingToOriginal { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
 
-    var recreateOriginalAnimation = ".originalReconstructionAnimation { animation-duration: .75s; animation-name: reconstruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes reconstruction { 0% {height: 0px; width: 0px;}  100% { height: " + originalHeight + "; width: " + originalWidth + ";} }";
+    var recreateOriginalAnimation = ".originalReconstructionAnimation { animation-duration: " + animationSpeed + "s; animation-name: reconstruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes reconstruction { 0% {height: 0px; width: 0px;}  100% { height: " + originalHeight + "; width: " + originalWidth + ";} }";
 
-    var destroyOriginalAnimation = ".originalDestructionAnimation { animation-duration: .75s; animation-name: destruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes destruction { 0% { height: " + originalHeight + "; width: " + originalWidth + ";} 100% {height: 0px; width: 0px;}}";
+    var destroyOriginalAnimation = ".originalDestructionAnimation { animation-duration: " + animationSpeed + "s; animation-name: destruction; animation-iteration-count: 1; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes destruction { 0% { height: " + originalHeight + "; width: " + originalWidth + ";} 100% {height: 0px; width: 0px;}}";
 
     //Create CSS styling for the two Classes in the head of the document
     var head = document.getElementsByTagName('head')[0];
@@ -152,6 +158,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Set the orignal video state class on the placeholder
     setVideoClass("originalSize", placeHolder);
 
+    //animationSpeed Conversion for Timeouts
+    animationSpeed = (animationSpeed * 1000);
+
     //Animation Transitioner Functions
     var originalToPopoutTransitioner = function() {
         if (!poppedOut) {
@@ -164,8 +173,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
                 setTimeout(function() {
                     //move the video after x timeout
                     setVideoClass("popoutSize", animationWrapper);
-                }, 750);
-            }, 750);
+                }, animationSpeed);
+            }, animationSpeed);
         } else {
             setVideoClass("popoutSize", originalVidContainer);
         }
@@ -182,8 +191,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
                 poppedOut = false;
                 setTimeout(function() {
                     setVideoClass("originalSize", animationWrapper);
-                }, 750);
-            }, 750);
+                }, animationSpeed);
+            }, animationSpeed);
         } else {
             setVideoClass("originalSize", originalVidContainer);
         }
@@ -222,10 +231,10 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Function for setting up whether Video Container is visible
     var screenCheck = function() {
         //Dimensions for the video
-        var videoTop = locationDimension.top + (locationDimension.height * transitionSpeed);
-        var videoBottom = locationDimension.bottom - (locationDimension.height * transitionSpeed);
-        var videoLeft = locationDimension.left + (locationDimension.width * transitionSpeed);
-        var videoRight = locationDimension.right - (locationDimension.width * transitionSpeed);
+        var videoTop = locationDimension.top + (locationDimension.height * percentVideoPassed);
+        var videoBottom = locationDimension.bottom - (locationDimension.height * percentVideoPassed);
+        var videoLeft = locationDimension.left + (locationDimension.width * percentVideoPassed);
+        var videoRight = locationDimension.right - (locationDimension.width * percentVideoPassed);
         //Location of the top left of window
         var currentTop = window.scrollY;
         var currentBottom = currentTop + window.innerHeight;
