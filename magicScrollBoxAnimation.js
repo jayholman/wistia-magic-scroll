@@ -219,7 +219,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             popoutTop = top;
             popoutLeft = left;
         } else if (popoutLocation === 1) {
-            popoutLeft = left;
+            popoutleft = left;
         } else if (popoutLocation === 2) {
             popoutTop = top;
         }
@@ -241,12 +241,12 @@ Wistia.plugin("magic-scroll", function(video, options) {
         //Original Animation
         var originalAnimationNode = document.createTextNode(".magicScrollOriginalAnimation { animation-duration: .75s; animation-name: poppingBack; animation-iteration-count: 1; position: fixed; z-index: 1000;} @keyframes poppingBack { 0% { top: " + popoutTop + "; left: " + popoutLeft + "; height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% {  top: " + originalY + ";  left: " + originalX + "; height: " + locationDimension.height + "px; width: " + locationDimension.width + "px;} }");
 
-        if (animationDecision === "initial" || animationDecision === "popout") {
+        // if (animationDecision === "initial" || animationDecision === "popout") {
             popoutStyleTag.appendChild(popoutAnimationNode);
-        }
-        if (animationDecision === "initial" || animationDecision === "original") {
+        // }
+        // if (animationDecision === "initial" || animationDecision === "original") {
             originalStyleTag.appendChild(originalAnimationNode);
-        }
+        // }
     };
 
     animationCreation(locationDimension.left, locationDimension.top, "initial");
@@ -254,12 +254,8 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Function to remove placeholder div
     var destroyAnimation = function(animationNode) {
         var animationStyle = document.getElementById(animationNode);
-        if (animationstyle) {
-            while (animationStyle) {
-                var parentDiv = animationStyle.parentElement;
-                parentDiv.removeChild(animationStyle);
-            }
-        }
+        var parentDiv = animationStyle.parentElement;
+        parentDiv.removeChild(animationStyle);
     };
 
     //Calculate User position within the light grid
@@ -272,39 +268,40 @@ Wistia.plugin("magic-scroll", function(video, options) {
         //Bottom Line
         var bottomLine = locationDimension.bottom + 50;
         //Inner Top Line
-        var innerTopLine = locationDimension.top + 10;
+        var innerTopLine = locationDimension.top + 20;
         //Inner Bottom Line
-        var innerBottomLine = locationDimension.bottom - 10;
+        var innerBottomLine = locationDimension.bottom - 20;
 
         if (location != 1 && currentTop < topLine) {
             //Downward Return Animation
             location = 1;
             destroyAnimation("originalAnimationCss");
-            animationCreation((skynetLocator(originalVidContainer).left), window.innerHeight, "original");
+            animationCreation((originalVidContainer.getBoundingClientRect().left), window.innerHeight, "original");
             return 1;
         } else if (location != 2 && currentTop > bottomLine) {
             //Upward Return Animation
             location = 2;
             destroyAnimation("originalAnimationCss");
-            animationCreation((skynetLocator(originalVidContainer).left), (0 - locationDimension.height), "original");
+            animationCreation((originalVidContainer.getBoundingClientRect().left), (0), "original");
             return 2;
         } else if (location != 3 && currentTop > locationDimension.top && currentTop < innerTopLine) {
             //Upper Popout Animation
             location = 3;
             destroyAnimation("popoutAnimationCss");
-            animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top), "popout");
+            animationCreation((originalVidContainer.getBoundingClientRect().left), (originalVidContainer.getBoundingClientRect().top), "popout");
             return 3;
         } else if (location != 4 && currentTop < locationDimension.bottom && currentTop > innerBottomLine) {
             //Lower Popout Animation
             location = 4;
             destroyAnimation("popoutAnimationCss");
-            animationCreation((skynetLocator(originalVidContainer).left), (skynetLocator(originalVidContainer).top), "popout");
+            animationCreation((originalVidContainer.getBoundingClientRect().left), (soriginalVidContainer.getBoundingClientRect().top), "popout");
             return 4;
         }
     };
 
     var animationCheck = function() {
         console.log("Current Grid Location: " + location);
+        console.log(popoutLocation)
     };
 
     //Transitioners
