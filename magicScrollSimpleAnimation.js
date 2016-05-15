@@ -119,13 +119,18 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Determine class sizes for the two video container states
     var originalSize = '.originalSize { height: ' + originalHeight + '; width: ' + originalWidth + '; position: relative; } ';
 
-    var popoutSize = '.popoutSize { ' + 'height: ' + popoutHeight + '; width: ' + popoutWidth + '; position: fixed; z-index: 1000; ' + popoutLocationY + ' ' + popoutLocationX + '}';
+    var popoutSize = '.popoutSize { ' + 'height: ' + popoutHeight + '; width: ' + popoutWidth + '; position: fixed; z-index: 1000; ' + popoutLocationY + ' ' + popoutLocationX + ' border: 2px solid dodgerblue;}';
+
+    //Create Animation Styles
+    var createPopoutAnimation = ".popoutCreationAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes poppingOut { 0% {height: 0px; width: 0px;}  100% { height: " + popoutHeight + "; width: " + popoutWidth + ";} }";
+
+    var destroyPopoutAnimation = ".popoutDestructionAnimation { animation-duration: 1s; animation-name: poppingOut; animation-iteration-count: 1; position: fixed; z-index: 1000; border: 2px solid dodgerblue; overflow-x: hidden; overflow-y: hidden;} @keyframes poppingOut { 0% {height: " + popoutHeight + "; width: " + popoutWidth + ";}  100% { height: 0px; width: 0px;} }";
 
     //Create CSS styling for the two Classes in the head of the document
     var head = document.getElementsByTagName('head')[0];
     var styleNode = document.createElement("style");
-    styleNode.setAttribute("id", "magic-scroll-plugin-css");
-    var magicStyles = document.createTextNode(originalSize + popoutSize);
+    styleNode.setAttribute("id", "magicScrollPluginCss");
+    var magicStyles = document.createTextNode(originalSize + popoutSize + createPopoutAnimation + destroyPopoutAnimation);
     styleNode.appendChild(magicStyles);
     head.appendChild(styleNode);
 
