@@ -2,6 +2,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //Current options Available to Change:
     // video hashed_id -required
     // containingDivId: String - required
+    // animationWrapperId: String - required
     // src: "/experiments/magicScrollPlugin.js" - required
     // originalHeight: Integer
     // originalWidth: Integer
@@ -31,8 +32,9 @@ Wistia.plugin("magic-scroll", function(video, options) {
     //What exists and doesn't exist
     var poppedOut = false;
     var placeHolderExists = false;
-    //How to grab the video container
+    //How to grab the video container and the animation wrapper
     var originalVidContainer = document.getElementById(options.containingDivId);
+    var animationWrapper = document.getElementById(options.animationWrapperId);
 
     //Do we want to alter transitionSpeed
     if (options.transitionSpeed) {
@@ -135,39 +137,39 @@ Wistia.plugin("magic-scroll", function(video, options) {
     head.appendChild(styleNode);
 
     //Function for applying a class to the video container
-    var setVideoClass = function(theClass) {
-        originalVidContainer.setAttribute("class", theClass);
+    var setVideoClass = function(theClass, theThing) {
+        theThing.setAttribute("class", theClass);
     };
 
     //Set the orignal video state class on the video
-    setVideoClass("originalSize");
+    setVideoClass("originalSize", originalVidContainer);
 
     //Animation Transitioner Functions
     var originalToPopoutTransitioner = function() {
         if (!poppedOut) {
-            setVideoClass("popoutCreationAnimation");
-                //timeout
+            setVideoClass("popoutCreationAnimation", originalVidContainer);
+            //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("popoutSize");
+                setVideoClass("popoutSize", originalVidContainer);
                 poppedOut = true;
             }, 750);
         } else {
-            setVideoClass("popoutSize");
+            setVideoClass("popoutSize", originalVidContainer);
         }
     };
 
     var popoutToOriginalTransitioner = function() {
         if (poppedOut) {
-            setVideoClass("popoutDestructionAnimation")
+            setVideoClass("popoutDestructionAnimation", originalVidContainer)
                 //timeout
             setTimeout(function() {
                 //move the video after x timeout
-                setVideoClass("originalSize");
+                setVideoClass("originalSize", originalVidContainer);
                 poppedOut = false;
             }, 750);
         } else {
-          setVideoClass("originalSize");
+            setVideoClass("originalSize", originalVidContainer);
         }
     };
     //Function to create placeholder div
@@ -265,7 +267,7 @@ Wistia.plugin("magic-scroll", function(video, options) {
             originalToPopoutTransitioner();
         } else if (!screenCheck() && poppedOut && video.state() === "paused" && screenLargeEnough()) {
             //Don't disappear if the video is paused
-            setVideoClass("popoutSize");
+            setVideoClass("popoutSize", originalVidContainer);
             poppedOut = true;
         } else if (!screenLargeEnough() && !screenCheck()) {
             //Set Size for permanent-ish Original Position div
